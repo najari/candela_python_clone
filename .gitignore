@@ -1,0 +1,17 @@
+.venv/
+.build-cache/
+deployment/
+build/*
+!build/*.cmd
+!build/*.py
+dist/
+.codegraph/
+.omo/
+__pycache__/
+*.pyc
+*.diagproj*
+*.egg-info/
+
+# Vector 예제·도움말 파일은 저장소에 복사하지 않는다(CLAUDE.md, 라이선스). 자체 작성한 Synthetic.cdd만 둔다.
+examples/*
+!examples/Synthetic.cdd

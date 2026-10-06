@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<!-- saved from url=(0087)file:///C:/Users/admin/candela_clone/docs/ui-manual-review-2026-09-26.html#replace-type -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DiagAuthor UI 목업</title>
+<style>
+:root{--bg:#f4f6fa;--panel:#fff;--ink:#1b283d;--muted:#677a92;--line:#dce3ed;--line2:#cbd5e3;--head:#edf2f9;--headInk:#50617b;--sel:#dbe8ff;--selInk:#163668;--accent:#205db8;--accentSoft:#e6efff;--warn:#a06b19;--err:#b3261e;--ok:#2f7d5b;--grey:#8a94a6;--alt:#f8fafd;--tag:#6d3fd6}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font:13px/1.45 "Malgun Gothic","Apple SD Gothic Neo","Segoe UI",system-ui,sans-serif;color:var(--ink);background:#e6eaf0}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:252px minmax(0,1fr);height:100vh}
+.nav{background:#17253a;color:#d6deea;overflow:auto;padding:14px 10px 20px}
+.nav h1{font-size:14px;margin:2px 6px 2px;color:#fff;letter-spacing:.2px}
+.nav .sub{font-size:11px;color:#9fb0c8;margin:0 6px 12px;line-height:1.5}
+.nav a{display:block;color:inherit;text-decoration:none;padding:7px 9px;border-radius:6px;margin:2px 0}
+.nav a:hover{background:#22344f}
+.nav a.on{background:#2c4a78;color:#fff}
+.nav a b{display:block;font-weight:600;font-size:12.5px}
+.nav a small{display:block;color:#9fb0c8;font-size:11px}
+.nav .opts{margin:16px 6px 0;font-size:12px;color:#c3cfdf}
+.nav .opts label{display:flex;gap:6px;align-items:center;margin:4px 0}
+.main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.top{display:flex;align-items:baseline;gap:12px;padding:10px 18px;background:#fff;border-bottom:1px solid var(--line)}
+.top h2{margin:0;font-size:15px}
+.top .desc{color:var(--muted);font-size:12px}
+.content{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:0}
+#stage{overflow:auto;padding:16px}
+#notes{overflow:auto;background:#fff;border-left:1px solid var(--line);padding:14px 16px 30px;font-size:12.5px}
+@media (max-width:1660px){.content{grid-template-columns:1fr;overflow:auto}#stage{overflow:visible}#notes{border-left:0;border-top:1px solid var(--line)}}
+#notes h3{font-size:13.5px;margin:4px 0 10px}
+#notes .item{border:1px solid var(--line);border-radius:8px;padding:9px 10px;margin:0 0 9px;background:#fbfcfe}
+#notes .item b{font-size:12.8px}
+#notes .item p{margin:5px 0 0}
+#notes .ref{color:var(--muted);font-size:11.5px}
+#notes .try{color:#1d4f96;font-size:12px}
+.mid{display:inline-block;background:var(--tag);color:#fff;font:600 10.5px/1.3 system-ui;padding:1px 5px;border-radius:6px;margin-right:4px;vertical-align:1px}
+kbd{font:600 11px/1 Consolas,monospace;background:#fff;border:1px solid #c6cfdc;border-bottom-width:2px;border-radius:4px;padding:1px 4px}
+/* 목업 창 */
+.win{background:var(--bg);border:1px solid #b6c1d2;border-radius:8px;box-shadow:0 10px 30px rgba(20,40,70,.18);overflow:hidden;min-width:1040px;position:relative;display:flex;flex-direction:column}
+.titlebar{height:30px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 12px;font-size:12px;color:#44556d;gap:8px;flex:none}
+.titlebar .dots{display:flex;gap:6px;margin-left:auto}
+.titlebar .dots i{width:10px;height:10px;border-radius:50%;background:#d5dbe5;display:block}
+.menubar{display:flex;gap:16px;padding:4px 12px;background:#fff;font-size:12.5px;color:#22334b;border-bottom:1px solid var(--line);flex:none}
+.toolbar{display:flex;gap:3px;align-items:center;padding:4px 10px;background:#fff;border-bottom:1px solid var(--line);flex:none;flex-wrap:wrap}
+.tb{padding:5px 9px;border:1px solid transparent;border-radius:4px;background:none;cursor:pointer;font-size:12.5px;white-space:nowrap}
+.tb:hover{background:var(--accentSoft);border-color:#bfd2fa}
+.tb:disabled{color:#aab3c1;background:none;border-color:transparent;cursor:default}
+.sep{width:1px;height:20px;background:var(--line);margin:0 4px}
+.btn{background:#fff;border:1px solid var(--line2);border-radius:5px;padding:5px 11px;cursor:pointer;white-space:nowrap}
+.btn:hover{background:#eaf1ff;border-color:#7d9ed2}
+.btn:disabled{color:#98a2b3;background:#f0f2f5;cursor:default;border-color:var(--line2)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:#1a4f9e}
+.btn.sm{padding:3px 8px;font-size:12px}
+.btn.on{background:var(--accentSoft);border-color:#7d9ed2;color:#1a4f9e}
+.tx{background:#fff;border:1px solid var(--line2);border-radius:4px;padding:4px 7px;min-width:0}
+.tx:focus{outline:2px solid #9bbcf0;outline-offset:0;border-color:#7d9ed2}
+.tx.bad{border-color:var(--err);outline-color:#f0b2ad;background:#fff6f5}
+textarea.tx{resize:vertical}
+.row{display:flex;gap:6px;align-items:center}
+.muted{color:var(--muted)}
+.small{font-size:11.5px}
+.pill{display:inline-block;padding:0 7px;border-radius:9px;background:var(--accentSoft);color:#245ba2;font-size:11.5px;line-height:18px;white-space:nowrap}
+.pill.warn{background:#fdf1dc;color:var(--warn)}
+.pill.grey{background:#eceff4;color:#5d6a7e}
+.pill.ok{background:#e1f3e9;color:var(--ok)}
+.hint{color:var(--muted);font-size:11.5px}
+/* 본체 레이아웃 */
+.heading{display:flex;align-items:flex-end;padding:8px 14px 2px;flex:none}
+.heading h1{font-size:20px;margin:0;color:#142c4d}
+.heading .subt{color:#677a92;font-size:12px;margin-left:10px;padding-bottom:3px}
+.heading .badge{margin-left:auto;background:#e6efff;color:#245ba2;border-radius:4px;padding:4px 9px;font-size:12px}
+.pathbar{display:flex;gap:6px;align-items:center;padding:6px 14px;flex:none;position:relative}
+.pathbar .navbtn{width:28px;padding:4px 0;text-align:center}
+.combo{position:relative;flex:1;display:flex}
+.combo input{flex:1;border-radius:4px 0 0 4px}
+.combo .dropbtn{border:1px solid var(--line2);border-left:0;background:#fff;border-radius:0 4px 4px 0;width:26px;cursor:pointer;padding:0}
+.dropdown{position:absolute;top:100%;left:0;right:26px;background:#fff;border:1px solid var(--line2);border-radius:4px;box-shadow:0 6px 18px rgba(20,40,70,.16);z-index:30;max-height:220px;overflow:auto;font-size:12.5px}
+.dropdown div{padding:5px 9px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dropdown div:hover{background:var(--sel)}
+.dropdown .cap{color:var(--muted);font-size:11px;cursor:default;background:#f6f8fb}
+.work{flex:1;display:grid;grid-template-columns:230px minmax(0,1fr);gap:0;min-height:0;padding:0 14px 0}
+.tree{background:#fff;border:1px solid var(--line);overflow:auto;font-size:12.5px;padding:4px 0}
+.tree .th{background:var(--head);color:var(--headInk);font-weight:600;padding:6px 10px;border-bottom:1px solid #d4dfed;margin-top:-4px;position:sticky;top:-4px}
+.tree div.n{padding:3px 8px;white-space:nowrap;cursor:pointer;border-radius:3px;margin:0 3px}
+.tree div.n:hover{background:#eef3fb}
+.tree div.n.on{background:var(--sel);color:var(--selInk)}
+.tree div.n.dim{color:#8a94a6}
+.split{display:flex;flex-direction:column;min-width:0;min-height:0;padding-left:8px}
+.listzone{display:flex;flex-direction:column;min-height:0;flex:1.5}
+.filters{display:flex;gap:6px;align-items:center;padding:0 0 5px}
+.filters .cat{font-weight:600;white-space:nowrap}
+.chip{display:inline-flex;gap:6px;align-items:center;background:#fff7e6;border:1px solid #f0d49a;color:#7a5410;border-radius:12px;padding:1px 4px 1px 9px;font-size:11.5px;white-space:nowrap}
+.chip button{border:0;background:#f4dfb2;border-radius:50%;width:16px;height:16px;line-height:14px;padding:0;cursor:pointer;font-size:11px}
+.pageinfo{color:#677a92;font-size:12px;padding:1px 0 4px}
+.tablewrap{flex:1;overflow:auto;border:1px solid var(--line);background:#fff;position:relative;min-height:90px}
+.tablewrap:focus{outline:none}
+.region-focus{box-shadow:0 0 0 2px #7aa6ea inset}
+.grid{border-collapse:separate;border-spacing:0;table-layout:fixed;background:#fff;font-size:12.5px}
+.grid th{position:sticky;top:0;background:var(--head);color:var(--headInk);font-weight:600;text-align:left;padding:6px 8px;border-right:1px solid #e1e7f0;border-bottom:1px solid #d4dfed;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;user-select:none;cursor:pointer;z-index:2}
+.grid th .rz{position:absolute;right:0;top:0;bottom:0;width:7px;cursor:col-resize}
+.grid th .rz:hover{background:#c7d6ee}
+.grid th .si{color:var(--accent);font-size:10px;margin-left:3px}
+.grid td{padding:4px 8px;border-bottom:1px solid #edf0f5;border-right:1px solid #f3f5f8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;height:26px}
+.grid tbody tr:nth-child(even) td{background:var(--alt)}
+.grid tbody tr.sel td{background:var(--sel);color:var(--selInk)}
+.grid td.cur{box-shadow:inset 0 0 0 2px var(--accent)}
+.grid td.rn{color:#8793a6;text-align:right;background:#f6f8fb !important;width:34px}
+.grid td.editing{padding:0;overflow:visible}
+.grid td.editing .tx{width:100%;height:25px;border-radius:0;border:2px solid var(--accent);padding:2px 6px}
+.grid td.editing textarea.tx{height:50px;resize:none;display:block;font-size:12.5px;line-height:1.35}
+.grid tr.magic td{color:var(--accent);font-style:italic;cursor:pointer;background:#fbfcff !important}
+.grid td.num{font-family:Consolas,"Malgun Gothic",monospace}
+.grid td.dim{color:#9aa4b3}
+.pane{display:flex;flex-direction:column;min-height:0;flex:1;margin-top:6px}
+.tabsbar{display:flex;align-items:flex-end;gap:0;border-bottom:1px solid var(--line2)}
+.tabsbar .ttl{padding:0 12px 7px 2px;font-weight:600}
+.tabsbar .tab{padding:6px 14px;border:1px solid #d5deeb;border-bottom:0;background:#e8edf5;cursor:pointer;margin-right:-1px;font-size:12.5px}
+.tabsbar .tab.on{background:#fff;color:#205db8;position:relative;top:1px}
+.tabsbar .corner{margin-left:auto;padding-bottom:4px;display:flex;gap:6px;align-items:center}
+.tabbody{flex:1;background:#fff;border:1px solid var(--line2);border-top:0;overflow:auto;min-height:80px}
+.sheet{width:100%;border-collapse:collapse;font-size:12.5px}
+.sheet td{border-bottom:1px solid #eef1f5;padding:4px 8px;vertical-align:middle}
+.sheet td:first-child{width:190px;color:#445670;background:#f8fafd;border-right:1px solid #eef1f5}
+.sheet .tx{width:100%}
+.sheet .ro{color:#8a94a6}
+.sheetnote{padding:7px 10px;background:#f3f7ff;border-bottom:1px solid #dde7f7;color:#2a4f86;font-size:12px}
+.dock{flex:none;margin:6px 14px 0;border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;height:180px}
+.dock .dh{background:#e9eff7;padding:4px 8px;font-size:12px;display:flex;align-items:center;gap:8px}
+.dock .dtools{display:flex;gap:4px;align-items:center;padding:4px 6px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tog{border:1px solid var(--line2);background:#fff;border-radius:4px;padding:2px 7px;font-size:11.5px;cursor:pointer}
+.tog.on{background:var(--accentSoft);border-color:#8fb0e4;color:#1a4f9e}
+.dockbody{flex:1;display:flex;min-height:0}
+.logwrap{flex:1;overflow:auto}
+.logdet{width:300px;border-left:1px solid var(--line);padding:8px 10px;font-size:12px;overflow:auto;background:#fbfcfe;white-space:pre-wrap}
+.lt-err{color:var(--err)} .lt-warn{color:var(--warn)} .lt-info{color:#3b5a86} .lt-stat{color:#7a8699}
+.link{color:var(--accent);cursor:pointer;text-decoration:none;font-weight:700}
+.link:hover{text-decoration:underline}
+.statusbar{flex:none;display:flex;gap:10px;align-items:center;background:#e9eef6;color:#405673;font-size:12px;padding:4px 12px;margin-top:6px;min-height:24px}
+.statusbar .right{margin-left:auto;display:flex;gap:10px;align-items:center}
+.win.full .tree,.win.full .pane,.win.full .dock,.win.full .heading,.win.full .pathbar{display:none}
+.win.full .work{grid-template-columns:1fr;padding-top:8px}
+.win.full .split{padding-left:0}
+.fullnote{display:none}
+.win.full .fullnote{display:inline-block}
+/* 떠 있는 창·메뉴 */
+.menu{position:absolute;background:#fff;border:1px solid #c5cfdd;border-radius:6px;box-shadow:0 8px 22px rgba(20,40,70,.2);padding:4px 0;z-index:40;min-width:250px;font-size:12.5px}
+.menu div{padding:5px 14px;cursor:pointer;display:flex;gap:14px}
+.menu div span:last-child{margin-left:auto;color:#8a94a6}
+.menu div:hover{background:var(--sel)}
+.menu div.off{color:#a8b1bf;cursor:default}
+.menu div.off:hover{background:none}
+.menu hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+.float{position:absolute;background:var(--bg);border:1px solid #9fb0c8;border-radius:7px;box-shadow:0 12px 30px rgba(20,40,70,.28);z-index:35}
+.float .fh{background:#fff;border-bottom:1px solid var(--line);padding:6px 10px;border-radius:7px 7px 0 0;cursor:move;display:flex;align-items:center;font-weight:600}
+.float .fh .x{margin-left:auto;border:0;background:none;cursor:pointer;font-size:15px;line-height:1;color:#607089}
+.float .fb{padding:10px 12px}
+.overlay{position:absolute;inset:0;background:rgba(20,34,56,.28);display:flex;align-items:center;justify-content:center;z-index:50}
+.dlg{background:var(--bg);border:1px solid #9fb0c8;border-radius:8px;box-shadow:0 16px 40px rgba(20,40,70,.32);display:flex;flex-direction:column;resize:both;overflow:hidden;min-width:520px;min-height:360px;position:relative}
+.dlg .dh{background:#fff;border-bottom:1px solid var(--line);padding:7px 12px;font-weight:600;display:flex;align-items:center;gap:8px;flex:none}
+.dlg .dh .x{margin-left:auto;border:0;background:none;cursor:pointer;font-size:16px;color:#607089}
+.dlg .db{flex:1;padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-height:0;overflow:auto}
+.dlg .df{flex:none;display:flex;gap:6px;align-items:center;padding:8px 12px;border-top:1px solid var(--line);background:#f7f9fc}
+.dlg .df .sp{flex:1}
+.dlg .grip{position:absolute;right:2px;bottom:2px;width:12px;height:12px;background:linear-gradient(135deg,transparent 45%,#9fb0c8 45%,#9fb0c8 55%,transparent 55%,transparent 70%,#9fb0c8 70%,#9fb0c8 80%,transparent 80%);pointer-events:none}
+.form{display:grid;grid-template-columns:150px minmax(0,1fr);gap:7px 10px;align-items:center}
+.form label{color:#445670}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:5px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:3px 9px;cursor:pointer;font-size:12px}
+.seg button+button{border-left:1px solid var(--line2)}
+.seg button.on{background:var(--accentSoft);color:#1a4f9e;font-weight:600}
+.qualrow{border:1px dashed #c9d5e6;border-radius:6px;padding:6px 8px;background:#fbfcff}
+.qualrow summary{cursor:pointer;color:#445670}
+.linkstate{font-size:11.5px;border-radius:9px;padding:0 7px;line-height:18px}
+.linkstate.auto{background:#e1f3e9;color:var(--ok)}
+.linkstate.man{background:#fdf1dc;color:var(--warn)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-height:0}
+.box{background:#fff;border:1px solid var(--line);border-radius:6px}
+.box .bh{padding:6px 10px;border-bottom:1px solid var(--line);font-weight:600;background:#f8fafd;display:flex;align-items:center;gap:8px}
+.box .bb{padding:8px 10px}
+.list1{max-height:100%;overflow:auto}
+.list1 div{padding:5px 9px;border-bottom:1px solid #f0f2f6;cursor:pointer;display:flex;gap:8px;align-items:center}
+.list1 div.on{background:var(--sel);color:var(--selInk)}
+/* 인스턴스 페이지 */
+.svc td{vertical-align:middle}
+.svc .tok{font-family:Consolas,monospace;background:#eef4ff;border:1px solid #cbdaf4;border-radius:4px;padding:0 4px;color:#1a4f9e;cursor:pointer;text-decoration:none}
+.svc .tok:hover{background:#dbe8ff}
+.svc .code{font-family:Consolas,monospace}
+.svc tr.unused td{color:#9aa4b3}
+.svc tr.pick td{background:#eef4ff}
+.chk{display:inline-block;width:15px;height:15px;border:1px solid #9aa9be;border-radius:3px;position:relative;vertical-align:-3px;background:#fff}
+.chk.on::after{content:"✓";position:absolute;left:2px;top:-3px;font-size:13px;color:#205db8;font-weight:700}
+.chk.req{background:#e9edf3}
+.chk.deact::before{content:"✕";position:absolute;left:3px;top:-3px;color:#c43a2f;font-size:13px;font-weight:700}
+.tip{position:absolute;z-index:60;background:#1f2d42;color:#e8eef7;font:12px/1.5 Consolas,"Malgun Gothic",monospace;padding:7px 10px;border-radius:6px;box-shadow:0 8px 20px rgba(0,0,0,.25);white-space:pre;pointer-events:none}
+.gridmap{border-collapse:collapse;font-size:12px;width:100%;table-layout:fixed}
+.gridmap th{background:var(--head);color:var(--headInk);padding:4px;border:1px solid #dde4ee;font-weight:600}
+.gridmap td{border:1px solid #e3e8f0;padding:3px 4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;height:24px}
+.gridmap td.b{background:#f6f8fb;color:#6c7a8f;cursor:default;width:62px}
+.gridmap td.hot{outline:2px solid #1a4f9e;outline-offset:-2px;font-weight:600}
+.stateicon{display:inline-block;width:14px;height:14px;border-radius:3px;background:#fdf1dc;border:1px solid #e3c37b;color:#8a5a00;font:700 10px/12px system-ui;text-align:center;margin-right:4px}
+/* 시작 화면 */
+.start{flex:1;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px;padding:14px}
+.drop{border:2px dashed #b9c8de;border-radius:10px;padding:22px;text-align:center;color:#5a6d88;background:#fbfcfe;transition:.15s}
+.drop.over{border-color:#205db8;background:#eef4ff;color:#1a4f9e}
+.recent div.r{display:grid;grid-template-columns:22px minmax(0,1fr) 90px 24px;gap:6px;align-items:center;padding:6px 8px;border-bottom:1px solid #f0f2f6;cursor:pointer}
+.recent div.r:hover{background:#f3f7ff}
+.recent .p{color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iconbtn{border:0;background:none;cursor:pointer;color:#7b889c;font-size:13px;padding:0}
+.iconbtn:hover{color:#1a4f9e}
+/* 비교 */
+.diff tr.lo td:nth-child(2){background:#fff1ef}
+.diff tr.ro td:nth-child(3){background:#eaf7ee}
+.diff tr.mod td:nth-child(2),.diff tr.mod td:nth-child(3){background:#fff8e6}
+.legend span{display:inline-flex;gap:4px;align-items:center;margin-right:10px;font-size:11.5px}
+.legend i{width:12px;height:12px;border-radius:2px;display:inline-block;border:1px solid #d7dde6}
+/* 태그 표시 */
+body.show-tags [data-m]{position:relative}
+body.show-tags [data-m]::after{content:attr(data-m);position:absolute;top:-9px;right:-4px;background:var(--tag);color:#fff;font:600 9.5px/1.25 system-ui;padding:1px 4px;border-radius:6px;pointer-events:none;z-index:25;white-space:nowrap}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:#1f2d42;color:#fff;padding:8px 14px;border-radius:8px;font-size:12.5px;opacity:0;transition:.2s;pointer-events:none;z-index:99;max-width:70vw}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body class="show-tags">
+<div class="app">
+  <aside class="nav">
+    <h1>DiagAuthor UI 목업</h1>
+    <div class="sub">CANdelaStudio 13 도움말 기반 개선안 · 2026-09-26<br>문서: ui-manual-review-2026-09-26.md</div>
+    <nav id="navlist"><a href="file:///C:/Users/admin/candela_clone/docs/ui-manual-review-2026-09-26.html#main" class=""><b>주 화면 · 목록 편집</b><small>M1 목록 · M2-2 여러 객체 · M3 찾기·경로·키 · M4 출력 창</small></a><a href="file:///C:/Users/admin/candela_clone/docs/ui-manual-review-2026-09-26.html#dialog" class=""><b>속성 대화상자</b><small>M2-1 Qualifier 자동 · M2-3 DTC 속성 탭 · M2-4 대화상자 규칙 · M2-5 값 형식</small></a><a href="file:///C:/Users/admin/candela_clone/docs/ui-manual-review-2026-09-26.html#instance" class=""><b>인스턴스 페이지 · 데이터 배치</b><small>M5-1 격자 연동 · M5-2 멤버 셀 편집 · M5-3 서비스 행 · M5-4 이름 바로 고치기</small></a><a href="file:///C:/Users/admin/candela_clone/docs/ui-manual-review-2026-09-26.html#start" class=""><b>시작 화면 · 설정</b><small>M6-1 시작 화면 · M6-2 설정</small></a><a href="file:///C:/Users/admin/candela_clone/docs/ui-manual-review-2026-09-26.html#replace-type" class="on"><b>데이터 타입 바꾸기</b><small>M6-3</small></a><a href="file:///C:/Users/admin/candela_clone/docs/ui-manual-review-2026-09-26.html#variant-wizard" class=""><b>변형 마법사</b><small>M6-4</small></a><a href="file:///C:/Users/admin/candela_clone/docs/ui-manual-review-2026-09-26.html#qualifier" class=""><b>Qualifier 개요</b><small>M6-5</small></a><a href="file:///C:/Users/admin/candela_clone/docs/ui-manual-review-2026-09-26.html#compare" class=""><b>비교 보기</b><small>M6-6</small></a><a href="file:///C:/Users/admin/candela_clone/docs/ui-manual-review-2026-09-26.html#dependencies" class=""><b>의존성 표</b><small>M6-7</small></a></nav>
+    <div class="opts">
+      <label><input type="checkbox" id="tagtoggle" checked=""> 항목 번호(M1-1 등) 표시</label>
+      <div class="hint" style="color:#9fb0c8;margin-top:8px">화면 데이터는 모두 가상의 예시입니다. 번호는 검토 문서의 항목 번호와 같습니다.</div>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="top"><h2 id="scrtitle">데이터 타입 바꾸기</h2><span class="desc" id="scrdesc">사용처를 골라 다른 타입으로 한 번에 연결</span></header>
+    <div class="content">
+      <section id="stage"><div style="min-width:1000px"><div class="dlg" style="width:980px;height:520px" data-m="M6-3"><div class="dh">데이터 타입 바꾸기<button class="x" data-a="cancel">✕</button></div><div class="db">
+      <div class="form"><label>바꿀 타입</label><div><b>UInt16 ×0.1 bar</b> <span class="hint">(이 대화상자를 연 타입, 바꿀 수 없음)</span></div>
+      <label>새 타입</label><select class="tx" id="s6t"><option value="0" selected="">UInt16 ×0.1 bar (Copy) · 16비트</option><option value="1">UInt16 ×0.01 bar · 16비트</option><option value="2">UInt8 ×1 bar · 8비트</option><option value="3">UInt32 ×0.001 bar · 32비트</option></select></div>
+      <div class="row"><b>아래에서 고른 사용처에 적용</b><span class="hint">충돌이 있는 행은 고를 수 없습니다. 적용은 한 명령(Undo 한 번)입니다.</span><span style="flex:1"></span><button class="btn sm" data-a="all">모두 선택(충돌 제외)</button><button class="btn sm" data-a="none">모두 해제</button></div>
+      <div class="tablewrap" style="flex:1"><table class="grid" style="width:100%"><colgroup><col style="width:44px"><col style="width:74px"><col style="width:330px"><col style="width:130px"><col style="width:190px"><col></colgroup><thead><tr><th></th><th>종류</th><th>경로</th><th>데이터 객체</th><th>영향</th><th>충돌</th></tr></thead><tbody>
+      <tr><td><input type="checkbox" data-u="0" checked=""></td><td>DID</td><td title="Base Variant/DID/0100 Brake Status">Base Variant/DID/0100 Brake Status</td><td>Brake pressure</td><td class="dim">없음</td><td class="dim" title="">없음</td></tr><tr><td><input type="checkbox" data-u="1" checked=""></td><td>DID</td><td title="Base Variant/DID/0101 Hydraulic Pressure">Base Variant/DID/0101 Hydraulic Pressure</td><td>Pressure</td><td class="dim">없음</td><td class="dim" title="">없음</td></tr><tr><td><input type="checkbox" data-u="2"></td><td>서비스</td><td title="Base Variant/IO Control/Pump Motor/ShortTermAdjustment 요청">Base Variant/IO Control/Pump Motor/ShortTermAdjustment 요청</td><td>Target pressure</td><td class="dim">없음</td><td class="dim" title="">없음</td></tr><tr><td><input type="checkbox" data-u="3" disabled=""></td><td>비트필드</td><td title="Base Variant/DID/0102 Yaw Rate/Status (8 Bit)">Base Variant/DID/0102 Yaw Rate/Status (8 Bit)</td><td>Pressure flag</td><td class="dim">없음</td><td class="lt-warn" title="8비트 비트필드 안에 16비트 타입을 넣을 수 없습니다.">8비트 비트필드 안에 16비트 타입을 넣을 수 없습니다.</td></tr><tr><td><input type="checkbox" data-u="4" disabled=""></td><td>스냅샷</td><td title="고장 메모리/Snapshot 0x20">고장 메모리/Snapshot 0x20</td><td>Pressure</td><td class="dim">없음</td><td class="lt-warn" title="원본 CDD 보존 항목(읽기 전용)이라 바꿀 수 없습니다.">원본 CDD 보존 항목(읽기 전용)이라 바꿀 수 없습니다.</td></tr></tbody></table></div>
+      <div class="hint">지금은 "데이터 타입 독립 복사"로 사본을 만든 뒤 사용처를 하나씩 고쳐야 합니다. 이 대화상자는 고른 사용처의 연결을 한 번에 바꿉니다(Replace Data Type). 길이가 바뀌면 뒤 멤버의 바이트 위치가 움직이므로 영향 열에 보입니다. 비슷한 타입 합치기(Replace Similar Data Types)는 범위 밖입니다.</div></div>
+      <div class="df"><span class="hint">2곳 선택</span><span class="sp"></span><button class="btn primary" data-a="ok">확인</button><button class="btn" data-a="cancel">취소</button></div><div class="grip"></div></div></div></section>
+      <aside id="notes"><h3>이 화면의 검토 항목</h3><div class="item"><span class="mid">M6-3</span><b>데이터 타입 바꾸기</b><p>타입의 사용처 목록에서 행을 골라 다른 타입으로 한 번에 바꿉니다. 원본 보존 항목이나 비트필드를 넘는 길이처럼 바꿀 수 없는 행은 충돌 열에 이유를 보이고 고를 수 없습니다. 길이가 바뀌어 뒤 멤버 위치가 움직이는 것은 영향 열에 보입니다. 지금은 독립 복사 뒤 사용처를 하나씩 고칩니다.</p><p class="ref">근거: Replace Data Type dialog · Replace Data Type feature(D001·D002)</p><p class="try">해 보기: 새 타입을 "UInt8 ×1 bar"와 "UInt32 ×0.001 bar"로 바꿔 영향·충돌 보기</p></div><p class="hint">근거의 [ID]는 CANdelaStudio 13 도움말의 FeatureID입니다. 항목 번호는 docs/ui-manual-review-2026-09-26.md와 같습니다.</p></aside>
+    </div>
+  </main>
+</div>
+<div id="toast"></div>
+<script>
+'use strict';
+/* ------------------------------------------------------------------ 공통 도구 */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hex=(n,w)=>'0x'+Number(n).toString(16).toUpperCase().padStart(w,'0');
+const reEsc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2400);}
+function stamp(){const d=new Date();return d.toTimeString().slice(0,8)+'.'+String(Math.floor(d.getMilliseconds()/10)).padStart(2,'0');}
+/* 이름 → Qualifier ([QUAL-R050]): 로마자로 바꿀 수 없는 글자는 _, 연속 _는 하나, 끝의 _ 제거, 숫자로 시작하면 _를 앞에 붙임, 길이 제한([QUAL-R130]) */
+const ROMAN={'ä':'ae','ö':'oe','ü':'ue','Ä':'Ae','Ö':'Oe','Ü':'Ue','ß':'ss','é':'e','è':'e','ê':'e','á':'a','à':'a','â':'a','ó':'o','ò':'o','ô':'o','í':'i','ì':'i','ú':'u','ù':'u','ñ':'n','ç':'c'};
+const QOPT={case:'keep',max:128};
+function qualFromName(name,opt=QOPT){
+  let s=[...String(name||'')].map(ch=>ROMAN[ch]??ch).join('');
+  s=s.replace(/[^A-Za-z0-9]+/g,'_').replace(/_+/g,'_').replace(/_+$/,'');if(s==='_')s='';
+  if(opt.case==='upper')s=s.toUpperCase();else if(opt.case==='lower')s=s.toLowerCase();
+  if(/^[0-9]/.test(s))s='_'+s;
+  const max=opt.max||128;if(s.length>max)s=s.slice(0,max).replace(/_+$/,'');
+  return s;
+}
+/* ------------------------------------------------------------------ 가상 데이터 */
+const RI=[
+ {key:'CorrectiveAction',name:'Corrective action',kind:'enum',req:true,desc:'정비 조치(템플릿 열거 값)',choices:[[0,'Replace control unit'],[1,'Inspect connector'],[2,'Inspect harness'],[3,'Check supply voltage'],[4,'Reflash software'],[5,'No action known'],[6,'Refer to special instruction']]},
+ {key:'ResetCondition',name:'Reset condition',kind:'text',req:false,desc:'고장이 풀리는 조건'},
+ {key:'SetCondition',name:'Set condition',kind:'text',req:false,desc:'고장이 설정되는 조건'},
+ {key:'SpecialInstruction',name:'Special instruction',kind:'text',req:false,desc:'정비 특별 지시'}];
+const VARIANTS=['Base Variant','Variant A','Variant B','Variant C'];
+function mkDtc(code,name,ca,reset,set,spec,shared){return{id:'t'+code.toString(16),code,name,qual:'DTC_'+code.toString(16).toUpperCase(),qualAuto:false,shared:shared??4,desc:'',a:{CorrectiveAction:ca,ResetCondition:reset||'',SetCondition:set||'',SpecialInstruction:spec||''}};}
+const DTC=[
+ mkDtc(0x401011,'Pump Motor - Circuit short to ground',5,'Valid value measured','Voltage < 0.2 V for 10 cycles within 4 s'),
+ mkDtc(0x401012,'Pump Motor - Circuit short to battery',5,'Valid value measured','Voltage > 5 V for 10 cycles within 4 s'),
+ mkDtc(0x401013,'Pump Motor - Circuit open',2,'Valid value measured','Ignition on; current < 0.04 A for 10 s'),
+ mkDtc(0x401025,'Pump Motor - Signal plausibility',5,'',''),
+ mkDtc(0x402111,'Brake Pedal Sensor A - Short to ground',1,'Valid value measured','Voltage < 0.2 V for 5 cycles'),
+ mkDtc(0x402112,'Brake Pedal Sensor A - Short to battery',1,'Valid value measured','Voltage > 4.8 V for 5 cycles'),
+ mkDtc(0x402113,'Brake Pedal Sensor A - Circuit open',1,'Valid value measured','No signal edge for 2 s'),
+ mkDtc(0x403011,'Wheel Speed FL - Signal invalid',2,'Plausible signal for 1 s','Signal jump > 30 km/h'),
+ mkDtc(0x403012,'Wheel Speed FR - Signal invalid',2,'Plausible signal for 1 s','Signal jump > 30 km/h'),
+ mkDtc(0x403013,'Wheel Speed RL - Signal invalid',2,'Plausible signal for 1 s','Signal jump > 30 km/h'),
+ mkDtc(0x403014,'Wheel Speed RR - Signal invalid',2,'Plausible signal for 1 s','Signal jump > 30 km/h'),
+ mkDtc(0x404021,'Supply Voltage - Too low',3,'Voltage > 9.5 V for 1 s','Voltage < 9 V for 2 s'),
+ mkDtc(0x404022,'Supply Voltage - Too high',3,'Voltage < 16 V for 1 s',''),
+ mkDtc(0x405001,'CAN Bus - Communication lost',6,'Message received again','No message for 500 ms','Check termination resistors first',1)];
+/* 가져온 CDD처럼 섞어 둔다: Pump Motor DTC는 이름에서 만든 Qualifier(이름을 따라감), 나머지는 코드형 Qualifier(직접 정한 값) */
+for(const d of DTC)if(d.name.startsWith('Pump Motor')){d.qual=qualFromName(d.name);d.qualAuto=true;}
+/* 데이터 배치(멤버 표·바이트 격자): Brake Status DID. Sensor serial은 30바이트라 격자에서 줄여 보인다([DOUIG-R210]). */
+const LAYOUT_BRAKE=[
+ {name:'Pedal switch',type:'Switch (2 Bit)',def:'0',con:'',desc:'0 = released, 1 = pressed',start:0,bits:2},
+ {name:'Pedal plausible',type:'Bool (1 Bit)',def:'1',con:'',desc:'',start:2,bits:1},
+ {name:'(reserved)',type:'reserved (5 Bit)',def:'',con:'',desc:'',start:3,bits:5,reserved:true},
+ {name:'Brake pressure',type:'UInt16 ×0.1 bar',def:'0',con:'',desc:'phys = 0.1 × raw [bar]',start:8,bits:16},
+ {name:'Sensor serial',type:'ASCII (30 Byte)',def:'',con:'',desc:'제조 일련번호',start:24,bits:240}];
+/* IO 제어 응답 Control Status(zz). Trace buffer는 30바이트라 격자에서 줄여 보인다. */
+const LAYOUT_PUMP=[
+ {name:'Pump state',type:'PumpState (2 Bit)',def:'0',con:'',desc:'0 = off, 1 = running, 2 = blocked',start:0,bits:2},
+ {name:'Over temperature',type:'Bool (1 Bit)',def:'0',con:'',desc:'',start:2,bits:1},
+ {name:'(reserved)',type:'reserved (5 Bit)',def:'',con:'',desc:'',start:3,bits:5,reserved:true},
+ {name:'Actual duty',type:'UInt8 %',def:'0',con:'',desc:'0..100 %',start:8,bits:8},
+ {name:'Motor current',type:'UInt16 ×0.01 A',def:'0',con:'',desc:'phys = 0.01 × raw [A]',start:16,bits:16},
+ {name:'Trace buffer',type:'Bytefield (30 Byte)',def:'',con:'',desc:'마지막 제어 기록',start:32,bits:240}];
+const DID=[
+ {id:'i0100',num:0x0100,name:'Brake Status',cls:'Dynamic Data',data:'Pedal switch, Pedal plausible, Brake pressure, Sensor serial',qual:'Brake_Status',shared:4,layout:LAYOUT_BRAKE},
+ {id:'i0101',num:0x0101,name:'Hydraulic Pressure',cls:'Dynamic Data',data:'Pressure',qual:'Hydraulic_Pressure',shared:4},
+ {id:'i0102',num:0x0102,name:'Yaw Rate',cls:'Dynamic Data',data:'Yaw rate, Status',qual:'Yaw_Rate',shared:1},
+ {id:'iF186',num:0xF186,name:'Active Session',cls:'Identification',data:'Session',qual:'Active_Session',shared:4},
+ {id:'iF18C',num:0xF18C,name:'Serial Number',cls:'Identification',data:'Serial',qual:'Serial_Number',shared:4},
+ {id:'iF190',num:0xF190,name:'VIN',cls:'Identification',data:'VIN',qual:'VIN',shared:4}];
+const FIELD_COLORS=['#dbe8ff','#e3f4e1','#fdf0d5','#f4e1f0','#e0f2f4','#ece6fb','#fbe3e0','#eef1d8'];
+
+/* ------------------------------------------------------------------ 공용: 데이터 배치(멤버 표 + 격자) */
+/* 격자 행. 최상위의 24바이트 넘는 필드는 앞 23바이트와 마지막 바이트만 보이고, 23번째 바이트 번호 뒤와 마지막 바이트 번호 앞에 …를 붙인다([DOUIG-R210]). */
+function gridRows(layout){
+  const rows=[];const maxByte=Math.max(...layout.map(f=>Math.ceil((f.start+f.bits)/8)-1));
+  const longs=layout.filter(f=>f.bits%8===0&&f.start%8===0&&f.bits/8>24);
+  for(let b=0;b<=maxByte;b++){
+    const lf=longs.find(f=>b>=f.start/8&&b<(f.start+f.bits)/8);
+    if(lf){const first=lf.start/8,last=(lf.start+lf.bits)/8-1;
+      if(b===first+22){rows.push({label:`${b}…`,byte:b});b=last-1;continue;}
+      if(b===last){rows.push({label:`…${b}`,byte:b});continue;}}
+    rows.push({label:String(b),byte:b});}
+  return rows.map(r=>{const cells=[];for(let bit=7;bit>=0;bit--){const abs=r.byte*8+bit;const fi=layout.findIndex(f=>abs>=f.start&&abs<f.start+f.bits);cells.push({f:fi,text:fi>=0?layout[fi].name:''});}
+    return{label:r.label,cells};});
+}
+function layoutHtml(layout,st,prefix){
+  const view=st.view||'all';
+  const pos=f=>f.bits%8===0&&f.start%8===0?{byte:String(f.start/8),bit:''}:{byte:String(Math.floor(f.start/8)),bit:String(f.start%8)};
+  let t=`<div class="tablewrap" data-m="M5-2" style="min-height:120px"><table class="grid" style="width:100%"><colgroup><col style="width:56px"><col style="width:44px"><col style="width:130px"><col style="width:130px"><col style="width:60px"><col style="width:52px"><col></colgroup><thead><tr><th>바이트</th><th>비트</th><th>이름</th><th>데이터 타입</th><th>기본값</th><th>상수</th><th>설명</th></tr></thead><tbody>`;
+  layout.forEach((f,i)=>{const p=pos(f);const sel=st.sel===i?' class="sel"':'';
+    const cell=(k,val,cls='')=>{if(st.edit&&st.edit.i===i&&st.edit.k===k)return k==='desc'?`<td class="editing"><textarea class="tx" id="${prefix}ed" rows="2">${esc(val)}</textarea></td>`:`<td class="editing"><input class="tx" id="${prefix}ed" value="${esc(val)}"></td>`;
+      const cur=st.sel===i&&st.col===k?' cur':'';return `<td class="${cls}${cur}" data-${prefix}r="${i}" data-k="${k}">${esc(val)}</td>`;};
+    t+=`<tr${sel}><td class="num" data-${prefix}r="${i}" data-k="byte">${p.byte}</td><td class="num" data-${prefix}r="${i}" data-k="bit">${p.bit}</td>${cell('name',f.name,f.reserved?'dim':'')}${cell('type',f.type)}${cell('def',f.def,'num')}${cell('con',f.con,'num')}${cell('desc',f.desc)}</tr>`;});
+  t+='</tbody></table></div>';
+  let g=`<div class="tablewrap" data-m="M5-1" style="min-height:120px"><table class="gridmap"><thead><tr><th style="width:62px">바이트</th>${[7,6,5,4,3,2,1,0].map(b=>`<th>Bit${b}</th>`).join('')}</tr></thead><tbody>`;
+  for(const r of gridRows(layout)){g+=`<tr><td class="b">${esc(r.label)}</td>`;let c=0;
+    while(c<8){const cell=r.cells[c];let span=1;while(c+span<8&&r.cells[c+span].f===cell.f)span++;
+      const f=cell.f;const col=f>=0?(layout[f].reserved?'#eceff4':FIELD_COLORS[f%FIELD_COLORS.length]):'#fff';
+      g+=`<td colspan="${span}" style="background:${col}" class="${f>=0&&st.sel===f?'hot':''}" data-${prefix}g="${f}" title="${esc(cell.text)}">${esc(cell.text)}</td>`;c+=span;}
+    g+='</tr>';}
+  g+='</tbody></table></div>';
+  const cols=view==='all'?'minmax(0,1.35fr) minmax(0,1fr)':'minmax(0,1fr)';
+  return `<div class="two" style="grid-template-columns:${cols};height:100%">${view!=='grid'?t:''}${view!=='table'?g:''}</div>`;
+}
+
+/* ------------------------------------------------------------------ 공용: DTC 속성 대화상자 (S1 겹침 창, S3 단독) */
+class DtcDialog{
+  constructor(host,dtcId,{standalone=false,onDone=null}={}){this.host=host;this.standalone=standalone;this.onDone=onDone;this.load(dtcId);this.tab='general';this.details=false;this.hideEmpty=false;this.item=0;this.codeFmt='hex';this.qualOpen=false;this.render();}
+  load(id){this.dtc=DTC.find(d=>d.id===id)||DTC[0];const d=this.dtc;this.w={name:d.name,qual:d.qual,code:d.code,desc:d.desc,a:{...d.a}};
+    this.linked=d.qualAuto||d.qual===qualFromName(d.name);}
+  gen(){return qualFromName(this.w.name)||('DTC_'+this.w.code.toString(16).toUpperCase());}
+  items(){return RI.filter(r=>!this.hideEmpty||(r.kind==='enum'?this.w.a[r.key]!=null:String(this.w.a[r.key]||'').trim()));}
+  render(){
+    const d=this.dtc,w=this.w;const idx=DTC.indexOf(d);
+    const opts=DTC.map((x,i)=>`<option value="${x.id}"${x===d?' selected':''}>${hex(x.code,6)}  ${esc(x.name)}</option>`).join('');
+    const codeTxt=this.codeFmt==='hex'?hex(w.code,6):String(w.code);
+    const general=`<div class="form">
+        <label>이름</label><input class="tx" data-f="name" value="${esc(w.name)}" autofocus>
+        <label>식별 이름</label>
+        <details class="qualrow" data-m="M2-1"${this.qualOpen?' open':''}><summary>Qualifier <b>${esc(w.qual)}</b> <span class="linkstate ${this.linked?'auto':'man'}">${this.linked?'이름을 따라 자동':'직접 입력 · 자동 멈춤'}</span></summary>
+          <div class="row" style="margin-top:6px"><input class="tx" data-f="qual" value="${esc(w.qual)}" style="flex:1"><button class="btn sm" data-a="regen">이름에서 다시 만들기</button></div>
+          <div class="hint" style="margin-top:4px">이름을 바꾸면 Qualifier가 따라 바뀝니다. 직접 고치면 그 뒤로는 따라가지 않습니다([QUAL-R020]). 한글만 있는 이름은 코드로 만듭니다(결정 필요).</div></details>
+        <label>DTC 코드</label><div class="row" data-m="M2-5"><input class="tx" data-f="code" value="${esc(codeTxt)}" style="width:140px"><span class="seg"><button data-fmt="hex" class="${this.codeFmt==='hex'?'on':''}">16진</button><button data-fmt="dec" class="${this.codeFmt==='dec'?'on':''}">10진</button></span><span class="hint">SAE ${sae(w.code)}</span></div>
+        <label>설명</label><textarea class="tx" rows="3" data-f="desc">${esc(w.desc)}</textarea></div>`;
+    const list=this.items();if(this.item>=list.length)this.item=Math.max(0,list.length-1);
+    const valCell=(r,i)=>{if(r.kind==='enum'){const o=(r.req?'':`<option value="">(없음)</option>`)+r.choices.map(c=>`<option value="${c[0]}"${w.a[r.key]===c[0]?' selected':''}>${esc(c[1])} (${c[0]})</option>`).join('');return `<select class="tx" data-ri="${r.key}" style="width:100%">${o}</select>`;}
+      return `<input class="tx" data-ri="${r.key}" value="${esc(w.a[r.key])}" style="width:100%">`;};
+    let attrs=`<div class="row" data-m="M2-3"><label class="row"><input type="checkbox" data-a="details"${this.details?' checked':''}> 상세 보기</label><label class="row"><input type="checkbox" data-a="hideEmpty"${this.hideEmpty?' checked':''}> 빈 항목 숨기기</label><span style="flex:1"></span><button class="btn sm" data-a="up" title="이전 항목 (Alt+↑)">▲</button><button class="btn sm" data-a="down" title="다음 항목 (Alt+↓)">▼</button></div>`;
+    if(this.details){const cur=list[this.item];
+      attrs+=`<div class="two" style="grid-template-columns:200px minmax(0,1fr);flex:1;min-height:170px"><div class="box list1">${list.map((r,i)=>`<div class="${i===this.item?'on':''}" data-it="${i}" title="Qualifier: ${r.key}">${esc(r.name)}${r.req?' <span class="pill grey">필수</span>':''}</div>`).join('')}</div>
+        <div class="box"><div class="bh">${cur?esc(cur.name):''} <span class="hint" style="font-weight:400">${cur?esc(cur.desc):''}</span></div><div class="bb">${cur?(cur.kind==='enum'?cur.choices.map(c=>`<label class="row" style="margin:3px 0"><input type="radio" name="ev" value="${c[0]}"${w.a[cur.key]===c[0]?' checked':''}> ${esc(c[1])} <span class="hint">(${c[0]})</span></label>`).join(''):`<textarea class="tx" data-ri="${cur.key}" rows="7" style="width:100%">${esc(w.a[cur.key])}</textarea><div class="hint">Enter = 줄바꿈 · Ctrl+Enter = 확정</div>`):''}</div></div></div>`;
+    }else{attrs+=`<table class="sheet" style="border:1px solid var(--line);background:#fff">${list.map((r,i)=>`<tr${i===this.item?' style="outline:2px solid #9bbcf0;outline-offset:-2px"':''}><td title="Qualifier: ${r.key}\n${esc(r.desc)}">${esc(r.name)}${r.req?' <span class="pill grey">필수</span>':''}</td><td>${valCell(r,i)}</td></tr>`).join('')}</table><div class="hint">항목 이름에 마우스를 올리면 Qualifier가 보입니다. 키 열은 두지 않습니다.</div>`;}
+    const html=`<div class="dlg" style="width:${this.standalone?'100%':'760px'};height:${this.standalone?'520px':'560px'}" data-m="M2-4">
+      <div class="dh">DTC 속성<button class="x" data-a="cancel" title="닫기 (Esc)">✕</button></div>
+      <div class="db">
+        <div class="row" data-m="M2-3"><span class="muted">DTC</span><select class="tx" data-a="nav" style="flex:1">${opts}</select><button class="btn sm" data-a="prev" title="이전 DTC"${idx<=0?' disabled':''}>▲</button><button class="btn sm" data-a="next" title="다음 DTC"${idx>=DTC.length-1?' disabled':''}>▼</button></div>
+        <div class="tabsbar"><div class="tab${this.tab==='general'?' on':''}" data-tab="general">기본 속성</div><div class="tab${this.tab==='attrs'?' on':''}" data-tab="attrs">속성 (${RI.length})</div></div>
+        <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0">${this.tab==='general'?general:attrs}</div>
+        <div class="hint">공유 영향: ${VARIANTS.slice(0,d.shared).join(', ')}</div>
+      </div>
+      <div class="df"><span class="hint">Ctrl+Tab 다음 탭 · Enter 확인 · Esc 취소</span><span class="sp"></span><button class="btn primary" data-a="ok">확인</button><button class="btn" data-a="cancel">취소</button><button class="btn" data-a="apply">적용</button></div>
+      <div class="grip"></div></div>`;
+    this.host.innerHTML=this.standalone?html:`<div class="overlay">${html}</div>`;
+    this.bind();
+    const dlg=$('.dlg',this.host);dlg.tabIndex=-1;if(this.keepFocus&&!this.host.contains(document.activeElement))dlg.focus({preventScroll:true});
+  }
+  sync(){const h=this.host;$$('[data-f]',h).forEach(el=>{const f=el.dataset.f;if(f==='code'){const v=this.codeFmt==='hex'?parseInt(el.value.replace(/^0x/i,''),16):parseInt(el.value,10);if(!isNaN(v))this.w.code=v;}else this.w[f]=el.value;});
+    $$('[data-ri]',h).forEach(el=>{const r=RI.find(x=>x.key===el.dataset.ri);this.w.a[r.key]=r.kind==='enum'?(el.value===''?null:Number(el.value)):el.value;});
+    const ev=$('input[name=ev]:checked',h);if(ev){const cur=this.items()[this.item];if(cur)this.w.a[cur.key]=Number(ev.value);}}
+  commit(){this.sync();const d=this.dtc,w=this.w;if(!w.name.trim()){toast('이름을 입력하세요.');return false;}
+    if(!/^[A-Za-z_][A-Za-z0-9_]*$/.test(w.qual)){toast('Qualifier는 영문 또는 _로 시작하고 영문·숫자·_만 씁니다.');return false;}
+    if(!(w.code>=0&&w.code<=0xFFFFFF)){toast('DTC 코드는 24비트입니다.');return false;}
+    if(DTC.some(x=>x!==d&&x.code===w.code)){toast('같은 코드의 DTC가 있습니다.');return false;}
+    const req=RI.find(r=>r.req&&w.a[r.key]==null);if(req){toast(`'${req.name}'은(는) 필수 항목입니다.`);return false;}
+    Object.assign(d,{name:w.name,qual:w.qual,code:w.code,desc:w.desc,qualAuto:this.linked});d.a={...w.a};return true;}
+  close(changed){if(this.onDone)this.onDone(changed,this.dtc);if(!this.standalone)this.host.innerHTML='';}
+  bind(){const h=this.host;
+    h.onclick=e=>{this.keepFocus=true;const a=e.target.closest('[data-a],[data-tab],[data-fmt],[data-it]');if(!a){if(!h.contains(document.activeElement)||document.activeElement===document.body)$('.dlg',h).focus({preventScroll:true});return;}
+      if(a.dataset.tab){this.sync();this.tab=a.dataset.tab;this.render();return;}
+      if(a.dataset.fmt){this.sync();this.codeFmt=a.dataset.fmt;this.render();return;}
+      if(a.dataset.it){this.sync();this.item=Number(a.dataset.it);this.render();return;}
+      const act=a.dataset.a;
+      if(act==='ok'){if(this.commit()){toast('적용했습니다(한 명령 · Undo 한 번).');this.close(true);}}
+      else if(act==='apply'){if(this.commit()){toast('적용했습니다. 창은 열려 있습니다.');if(this.onDone)this.onDone(true,this.dtc);this.load(this.dtc.id);this.render();}}
+      else if(act==='cancel'){this.close(false);}
+      else if(act==='regen'){this.sync();this.w.qual=this.gen();this.linked=true;this.qualOpen=true;this.render();}
+      else if(act==='prev'||act==='next'){const i=DTC.indexOf(this.dtc)+(act==='prev'?-1:1);if(DTC[i]){this.load(DTC[i].id);this.render();}}
+      else if(act==='up'||act==='down'){this.sync();const n=this.items().length;this.item=Math.max(0,Math.min(n-1,this.item+(act==='up'?-1:1)));this.render();}};
+    h.onchange=e=>{const t=e.target;
+      if(t.dataset.a==='nav'){this.load(t.value);this.render();}
+      else if(t.dataset.a==='details'){this.sync();this.details=t.checked;this.render();}
+      else if(t.dataset.a==='hideEmpty'){this.sync();this.hideEmpty=t.checked;this.render();}};
+    h.oninput=e=>{const t=e.target;
+      if(t.dataset.f==='name'){this.w.name=t.value;if(this.linked){this.w.qual=this.gen();const q=$('[data-f=qual]',h);if(q)q.value=this.w.qual;const b=$('.qualrow summary b',h);if(b)b.textContent=this.w.qual;}}
+      else if(t.dataset.f==='qual'){this.w.qual=t.value;const was=this.linked;this.linked=t.value===this.gen();if(was!==this.linked){this.qualOpen=true;const pos=t.selectionStart;this.render();const q=$('[data-f=qual]',h);if(q){q.focus();q.setSelectionRange(pos,pos);}}}
+      else if(t.dataset.f==='code'){t.classList.toggle('bad',isNaN(this.codeFmt==='hex'?parseInt(t.value.replace(/^0x/i,''),16):parseInt(t.value,10)));}};
+    h.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();this.close(false);}
+      else if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.preventDefault();e.stopPropagation();if(this.commit()){toast('확인: 적용했습니다.');this.close(true);}}
+      else if(e.key==='Enter'&&e.ctrlKey&&e.target.tagName==='TEXTAREA'){e.preventDefault();e.stopPropagation();if(this.commit()){toast('확인: 적용했습니다.');this.close(true);}}
+      else if(e.key==='Tab'&&e.ctrlKey){e.preventDefault();e.stopPropagation();this.sync();this.tab=this.tab==='general'?'attrs':'general';this.render();}
+      else if(e.altKey&&(e.key==='ArrowUp'||e.key==='ArrowDown')){e.preventDefault();e.stopPropagation();this.sync();const n=this.items().length;this.item=Math.max(0,Math.min(n-1,this.item+(e.key==='ArrowUp'?-1:1)));this.render();}
+      else e.stopPropagation();};
+    const first=$('[autofocus]',h)||$('input,select,textarea',h);if(first&&!this.standalone)setTimeout(()=>first.focus(),0);}
+}
+function sae(code){const letter='PCBU'[(code>>22)&3];return letter+(((code>>16)&0x3F).toString(16).toUpperCase().padStart(2,'0'))+(code&0xFFFF).toString(16).toUpperCase().padStart(4,'0');}
+
+/* ------------------------------------------------------------------ S1 주 화면 */
+const S1={
+  st:null,
+  init(){this.st={node:'dtc',filter:'',sorts:{dtc:[{k:'code',d:1}],did:[{k:'num',d:1}]},widths:{dtc:{},did:{}},sel:new Set(),anchor:null,cur:null,edit:null,full:false,pane:'props',
+    hist:[],hpos:-1,paths:['/Demo ECU/Base Variant/DID/VIN','qpath:/Base_Variant/[DTC]DTC_403012'],pathOpen:false,log:[],lf:{types:{'오류':true,'경고':true,'정보':true,'상태':false},origin:'전체',text:''},auto:true,details:false,logSel:null,
+    find:{open:false,term:'',hist:['Wheel Speed','0x4040'],scope:'all',mcase:false,word:false,whole:false,hits:[],pos:-1,x:560,y:120},focus:'list',menu:null,colinfo:false,dirty:false};
+    this.addLog('상태','프로젝트','작업 DB를 열었습니다(revision 12).',null);this.addLog('정보','프로젝트','Demo ECU 작업본을 열었습니다.',null);this.enter('dtc',true);},
+  cols(node){if(node==='dtc')return[
+    {k:'code',t:'DTC',w:96,edit:'code',tip:'Qualifier: (코드)\nDTC 코드(24비트). 0x 16진으로 보입니다.'},
+    {k:'name',t:'이름',w:270,edit:'text',tip:'Qualifier: (이름)\nError text'},
+    ...RI.map(r=>({k:'a:'+r.key,t:r.name,w:r.kind==='enum'?170:210,edit:r.kind,ri:r,tip:`Qualifier: ${r.key}\n${r.desc}${r.req?' · 필수':''} · 템플릿 레코드 항목`})),
+    {k:'shared',t:'공유 변형',w:76,tip:'이 DTC를 쓰는 변형 수'},
+    {k:'qual',t:'Qualifier',w:120,tip:'식별 이름. 어느 표든 맨 뒤 열입니다.'}];
+    return[{k:'num',t:'DID',w:72,tip:'DID 번호'},{k:'name',t:'이름',w:190,edit:'text',tip:'DID 이름'},{k:'cls',t:'진단 클래스',w:120},{k:'data',t:'DID 데이터',w:250},{k:'shared',t:'공유 변형',w:76},{k:'qual',t:'Qualifier',w:140,tip:'식별 이름. 맨 뒤 열.'}];},
+  rows(node){return node==='dtc'?DTC:DID;},
+  val(r,k){return k.startsWith('a:')?r.a[k.slice(2)]:r[k];},
+  text(r,k){const v=this.val(r,k);if(k==='code')return hex(v,6);if(k==='num')return hex(v,4);if(k==='shared')return v>1?v+'개':'독립';
+    if(k.startsWith('a:')){const ri=RI.find(x=>'a:'+x.key===k);if(ri.kind==='enum'){const c=ri.choices.find(c=>c[0]===v);return c?c[1]:'';}}return v??'';},
+  /* 필터 [LIST-R500]: 대소문자 무시, 공백으로 나눈 단어는 OR, 큰따옴표 안은 그대로 */
+  terms(){const t=[];this.st.filter.replace(/"([^"]+)"|(\S+)/g,(m,q,w)=>{t.push((q||w).toLowerCase());return m;});return t;},
+  match(r){const terms=this.terms();if(!terms.length)return true;const hay=this.cols(this.st.node).map(c=>this.text(r,c.k)).join(' ').toLowerCase();return terms.some(t=>hay.includes(t));},
+  sortVal(r,k){const v=this.val(r,k);return typeof v==='number'?v:String(this.text(r,k)).toLowerCase();},
+  visible(){const node=this.st.node,sorts=this.st.sorts[node];return this.rows(node).filter(r=>this.match(r)).sort((a,b)=>{for(const s of sorts){const va=this.sortVal(a,s.k),vb=this.sortVal(b,s.k);if(va<vb)return -s.d;if(va>vb)return s.d;}return 0;});},
+  row(id){return this.rows(this.st.node).find(r=>r.id===id);},
+  addLog(type,origin,msg,link,detail){this.st.log.push({id:this.st.log.length+1,type,origin,msg,link,detail,time:stamp()});},
+  /* 트리 노드 진입 [UI-R100]: 목록 포커스, 첫 행 선택, 식별 속성 오름차순, 필터 초기화 */
+  enter(node,initial){const st=this.st;st.node=node;st.filter='';st.edit=null;st.sorts[node]=[{k:node==='dtc'?'code':'num',d:1}];
+    const v=this.visible();st.sel=new Set(v[0]?[v[0].id]:[]);st.anchor=v[0]?.id??null;st.cur=v[0]?{id:v[0].id,col:this.cols(node)[0].k}:null;st.focus='list';
+    this.pushHist({node,id:st.cur?.id});if(!initial){this.render();this.focusList();}},
+  pushHist(e){const st=this.st;const c=st.hist[st.hpos];if(c&&c.node===e.node&&c.id===e.id)return;st.hist=st.hist.slice(0,st.hpos+1);st.hist.push(e);st.hpos=st.hist.length-1;},
+  back(step){const st=this.st;const p=st.hpos+step;if(p<0||p>=st.hist.length)return;st.hpos=p;const e=st.hist[p];st.node=e.node;st.filter='';st.edit=null;if(e.id){st.sel=new Set([e.id]);st.anchor=e.id;st.cur={id:e.id,col:this.cols(e.node)[0].k};}this.render();},
+  path(){const st=this.st;const base='/Demo ECU/Base Variant/'+(st.node==='dtc'?'DTC':'DID');const r=st.cur&&this.row(st.cur.id);return r?base+'/'+r.name:base;},
+  /* 경로 입력 [TB-R310]·[OBJP]: 이름 경로, npath:, qpath:, [DTC]/[DID] 종류 선택자 */
+  resolve(text){let t=text.trim();let mode='n';if(/^npath:/i.test(t))t=t.slice(6);else if(/^qpath:/i.test(t)){t=t.slice(6);mode='q';}
+    const parts=t.replace(/^\/+/,'').split('/').map(s=>s.trim()).filter(Boolean);
+    if(parts[0]&&/^(Demo ECU|Demo_ECU)$/.test(parts[0]))parts.shift();
+    if(!parts.length||!/^(Base Variant|Base_Variant)$/.test(parts[0]))return null;parts.shift();
+    if(!parts.length)return{node:'dtc',id:null};
+    let sel=null,rest=parts.join('/');const m=rest.match(/^\[(DTC|DID)\](.*)$/i);if(m){sel=m[1].toLowerCase();rest=m[2];}
+    else{const head=parts[0].toUpperCase();if(head==='DTC'||head==='DID'){sel=head.toLowerCase();rest=parts.slice(1).join('/');}}
+    if(!sel)return null;if(!rest)return{node:sel,id:null};
+    const rows=sel==='dtc'?DTC:DID;const r=rows.find(x=>mode==='q'?x.qual===rest:x.name===rest||x.qual===rest);return r?{node:sel,id:r.id}:null;},
+  goto(node,id,why){const st=this.st;if(st.node!==node){st.node=node;st.filter='';st.sorts[node]=[{k:node==='dtc'?'code':'num',d:1}];}st.edit=null;
+    const r=this.row(id);if(!r){this.render();return;}
+    if(!this.match(r)){st.filter='';this.addLog('정보','탐색',`대상이 필터에 가려 있어 필터를 풀었습니다 [UI-R100-NavFilter].`,null);}
+    st.sel=new Set([id]);st.anchor=id;st.cur={id,col:this.cols(node)[0].k};st.focus='list';this.pushHist({node,id});if(why)this.addLog('상태','탐색',why,{node,id});this.render();this.focusList();},
+  /* 새 번호 [UI-R335]: 기준 객체 R 다음의 가장 작은 빈 번호, 없으면 R 앞으로 */
+  nextCode(fromMagic){const v=this.visible();let R=null;
+    if(!DTC.length)R=null;else if(!v.length)R=DTC.reduce((a,b)=>a.code>b.code?a:b);
+    else if(fromMagic)R=v[v.length-1];else{const firstSel=v.findIndex(r=>this.st.sel.has(r.id));R=firstSel<=0?v[0]:v[firstSel-1];}
+    const used=new Set(DTC.map(d=>d.code));if(!R)return{code:1,why:'목록이 비어 첫 유효 번호를 씁니다.'};
+    for(let c=R.code+1;c<=0xFFFFFF;c++)if(!used.has(c))return{code:c,why:`기준 ${hex(R.code,6)} 다음의 빈 번호`};
+    for(let c=R.code-1;c>=0;c--)if(!used.has(c))return{code:c,why:`기준 ${hex(R.code,6)} 앞의 빈 번호`};return null;},
+  render(){const st=this.st,node=st.node;
+    const cols=this.cols(node);const w=st.widths[node];
+    const host=$('#stage');
+    host.innerHTML=`<div class="win${st.full?' full':''}" id="s1win" style="height:900px">
+      <div class="titlebar">Demo ECU${st.dirty?' *':''} — DiagAuthor 0.1.0<div class="dots"><i></i><i></i><i></i></div></div>
+      <div class="menubar"><span>파일</span><span>편집</span><span>프로젝트</span><span>가져오기 / 내보내기</span><span>보기</span><span>도움말</span></div>
+      <div class="toolbar">
+        <button class="tb" data-tip="프로젝트를 저장합니다 (Ctrl+S)">저장</button><span class="sep"></span>
+        <button class="tb" data-tip="마지막 명령을 되돌립니다 (Ctrl+Z)">실행 취소</button><button class="tb" data-tip="되돌린 명령을 다시 합니다 (Ctrl+Y)">다시 실행</button><span class="sep"></span>
+        <button class="tb" data-a="new" data-tip="선택 행 기준의 빈 번호로 새 DTC를 만듭니다 [UI-R335]">추가…</button>
+        <button class="tb" data-a="props" data-tip="선택 객체의 속성 대화상자를 엽니다 (Alt+Enter)">속성…</button>
+        <button class="tb" data-a="copyval" data-tip="마지막으로 고른 DTC의 현재 열 값을 다른 선택 DTC에 복사합니다 [DTCUI-R035]">값 복사</button><span class="sep"></span>
+        <button class="tb" data-a="find" data-tip="찾기 대화상자를 엽니다 (Ctrl+Shift+F). 다음 찾기는 F3">찾기…</button>
+        <button class="tb" data-a="validate" data-tip="문서 일관성을 검사합니다 (F9 · F5)">검증</button><span class="sep"></span>
+        <button class="tb" data-a="resetview" data-tip="분할 위치·결과 창을 처음 배치로 되돌립니다 [MENU-R1135]">보기 초기화</button>
+      </div>
+      <div class="heading"><h1>Demo ECU</h1><span class="subt">demo.diagproj · revision 12</span><span class="badge">DID ${DID.length} · DTC ${DTC.length} · 서비스 18</span></div>
+      <div class="pathbar" data-m="M3-2">
+        <span>이름 경로</span>
+        <button class="btn navbtn" data-a="back" data-tip="뒤로 (Alt+←)"${st.hpos<=0?' disabled':''}>‹</button>
+        <button class="btn navbtn" data-a="fwd" data-tip="앞으로 (Alt+→)"${st.hpos>=st.hist.length-1?' disabled':''}>›</button>
+        <div class="combo"><input class="tx" id="pathin" value="${esc(this.path())}" data-tip="이름 경로, npath:/…, qpath:/…/[DTC]… 를 넣고 Enter. ▾는 입력 기록"><button class="dropbtn" data-a="pathdrop" data-tip="이번 실행에서 넣은 경로 목록">▾</button>
+          ${st.pathOpen?`<div class="dropdown"><div class="cap">전에 넣은 경로 (세션)</div>${st.paths.slice().reverse().map(p=>`<div data-path="${esc(p)}">${esc(p)}</div>`).join('')}</div>`:''}</div>
+        <button class="btn" data-a="pathgo" data-tip="경로로 이동 (Enter와 같음)">이동</button><button class="btn" data-a="copypath" data-tip="이름 경로를 복사합니다">이름 경로 복사</button>
+      </div>
+      <div class="work">
+        <div class="tree${st.focus==='tree'?' region-focus':''}" id="tree" tabindex="0">
+          <div class="th">프로젝트 탐색</div>
+          <div class="n dim">▾ Demo ECU</div><div class="n dim" style="padding-left:22px">▸ 고장 메모리</div><div class="n dim" style="padding-left:22px">DID 개요 (${DID.length})</div>
+          <div class="n dim" style="padding-left:22px">▾ ◆ Base Variant</div>
+          <div class="n dim" style="padding-left:40px">식별 특징</div>
+          <div class="n${node==='did'?' on':''}" data-node="did" style="padding-left:40px">DID (${DID.length})</div>
+          <div class="n${node==='dtc'?' on':''}" data-node="dtc" style="padding-left:40px">DTC (${DTC.length})</div>
+          <div class="n dim" style="padding-left:40px">▸ 지원 진단 클래스 (9)</div>
+          <div class="n dim" style="padding-left:22px">▸ 변형 (3)</div><div class="n dim" style="padding-left:22px">▸ 상태</div><div class="n dim" style="padding-left:22px">데이터 타입 (41)</div>
+          <div class="n dim" style="padding-left:22px">프로토콜 서비스 (31)</div><div class="n dim" style="padding-left:22px">부정 응답 코드 (40)</div>
+          <div class="hint" style="padding:8px 10px">목업에서는 DID·DTC 노드만 동작합니다.</div>
+        </div>
+        <div class="split">
+          <div class="listzone">
+            <div class="filters">
+              <span class="cat">${node==='dtc'?'DTC':'DID'} (${this.rows(node).length})</span>
+              <span data-m="M1-3" style="flex:1;display:flex"><input class="tx" id="filterin" style="flex:1" placeholder='필터: 단어를 띄우면 하나라도 맞는 행, "따옴표"는 구절 그대로 (Ctrl+F)' value="${esc(st.filter)}"></span>
+              ${st.filter?`<span class="chip">${this.visible().length} / ${this.rows(node).length} 표시<button data-a="clearfilter" title="필터 지우기">✕</button></span>`:''}
+              <span data-m="M1-7"><button class="btn sm" data-a="colinfo" data-tip="열 이름·Qualifier·설명을 봅니다">열 정보</button></span>
+              <span data-m="M1-6"><button class="btn sm" data-a="full" data-tip="목록만 크게 봅니다. Esc로 돌아갑니다">⤢ 목록 크게</button></span>
+              <span class="fullnote pill warn">목록 크게 보기 · Esc로 돌아가기</span>
+            </div>
+            <div class="tablewrap${st.focus==='list'?' region-focus':''}" id="listwrap" tabindex="0" data-m="M1-1">
+              <table class="grid" id="grid"><colgroup><col style="width:34px">${cols.map(c=>`<col style="width:${w[c.k]||c.w}px">`).join('')}</colgroup>
+              <thead><tr><th></th>${cols.map(c=>{const si=st.sorts[node].findIndex(s=>s.k===c.k);const s=st.sorts[node][si];
+                return `<th data-col="${c.k}" title="${esc(c.tip||c.t)}${c.edit?'\n\nF2로 셀에서 바로 고칩니다':''}">${esc(c.t)}${s?`<span class="si">${s.d>0?'▲':'▼'}${st.sorts[node].length>1?si+1:''}</span>`:''}<span class="rz" data-rz="${c.k}"></span></th>`;}).join('')}</tr></thead>
+              <tbody>${this.bodyHtml(cols)}</tbody></table>
+            </div>
+            <div class="pageinfo">${this.visible().length}개 표시 · 헤더를 누르면 정렬, Ctrl+누르기로 2단 정렬 · 열 경계를 끌어 너비 조절(이 목록 종류에 기억) · 여러 행: Ctrl/Shift+클릭</div>
+          </div>
+          <div class="pane${st.focus==='pane'?' region-focus':''}" id="pane" tabindex="0" style="flex:1">${this.paneHtml()}</div>
+        </div>
+      </div>
+      <div class="dock" data-m="M4-1">${this.dockHtml()}</div>
+      <div class="statusbar" data-m="M4-2"><span id="stip">메뉴·버튼에 마우스를 올리면 설명이 여기에 나옵니다.</span><span class="right"><span>revision 12</span><span>${st.dirty?'저장 안 됨':'저장됨'}</span></span></div>
+      ${st.menu?this.menuHtml():''}
+      ${st.find.open?this.findHtml():''}
+      ${st.colinfo?this.colinfoHtml(cols):''}
+      <div id="s1dlg"></div>
+    </div>`;
+    this.bind();
+    if(st.edit){const ed=$('#celled');if(ed){ed.focus();if(ed.select&&ed.tagName==='INPUT')ed.select();}}
+    const lw=$('.logwrap');if(lw&&st.auto)lw.scrollTop=lw.scrollHeight;},
+  bodyHtml(cols){const st=this.st;const rows=this.visible();let h='';
+    rows.forEach((r,i)=>{const sel=st.sel.has(r.id);h+=`<tr class="${sel?'sel':''}" data-id="${r.id}"><td class="rn">${i+1}</td>`;
+      for(const c of cols){const cur=st.cur&&st.cur.id===r.id&&st.cur.col===c.k;
+        if(st.edit&&st.edit.col===c.k&&st.edit.ids.includes(r.id)&&st.edit.lead===r.id){
+          if(c.edit==='enum'){const ri=c.ri;h+=`<td class="editing"><select class="tx" id="celled">${ri.req?'':'<option value="">(없음)</option>'}${ri.choices.map(x=>`<option value="${x[0]}"${this.val(r,c.k)===x[0]?' selected':''}>${esc(x[1])}</option>`).join('')}</select></td>`;}
+          else h+=`<td class="editing"><input class="tx${st.edit.bad?' bad':''}" id="celled" value="${esc(st.edit.draft??this.text(r,c.k))}"></td>`;continue;}
+        const multi=st.edit&&st.edit.col===c.k&&st.edit.ids.includes(r.id)?' style="background:#fff3cf"':'';
+        h+=`<td class="${c.k==='code'||c.k==='num'?'num':''}${c.k==='qual'?' dim':''}${cur?' cur':''}" data-c="${c.k}"${multi}>${esc(this.text(r,c.k))}</td>`;}
+      h+='</tr>';});
+    if(st.node==='dtc')h+=`<tr class="magic"><td class="rn">＋</td><td colspan="${cols.length}" data-a="magic">＋ 새 항목을 만들려면 여기를 누르세요 (끝에 추가 · 마지막 행 다음 번호) [UI-R330-MagicLine]</td></tr>`;
+    if(!rows.length)h+=`<tr><td></td><td colspan="${cols.length}" class="muted">필터와 맞는 행이 없습니다.</td></tr>`;
+    return h;},
+  paneHtml(){const st=this.st;const ids=[...st.sel];const r=st.cur&&this.row(st.cur.id);
+    const corner=`<div class="corner"><button class="btn sm" data-a="props" data-tip="선택 객체의 속성 대화상자 (Alt+Enter). F2는 셀 편집입니다">속성 대화상자…  Alt+Enter</button></div>`;
+    const tabs=`<div class="tabsbar"><span class="ttl">선택 객체</span><div class="tab${st.pane==='props'?' on':''}" data-pane="props">속성</div><div class="tab${st.pane==='layout'?' on':''}" data-pane="layout">데이터 배치</div><div class="tab${st.pane==='detail'?' on':''}" data-pane="detail">세부 표</div>${corner}</div>`;
+    let body='';
+    if(st.pane==='props'){
+      if(ids.length>1)body=this.multiSheet(ids);
+      else if(r&&st.node==='dtc')body=`<table class="sheet"><tr><td>이름</td><td><input class="tx" data-pf="name" value="${esc(r.name)}"></td></tr><tr><td>DTC 코드</td><td class="ro">${hex(r.code,6)} · SAE ${sae(r.code)}</td></tr>${RI.map(x=>`<tr><td title="Qualifier: ${x.key}">${esc(x.name)}${x.req?' <span class="pill grey">필수</span>':''}</td><td>${x.kind==='enum'?`<select class="tx" data-pr="${x.key}">${x.req?'':'<option value="">(없음)</option>'}${x.choices.map(c=>`<option value="${c[0]}"${r.a[x.key]===c[0]?' selected':''}>${esc(c[1])}</option>`).join('')}</select>`:`<input class="tx" data-pr="${x.key}" value="${esc(r.a[x.key])}">`}</td></tr>`).join('')}<tr><td>공유</td><td class="ro">${VARIANTS.slice(0,r.shared).join(', ')}</td></tr><tr><td>Qualifier</td><td class="ro">${esc(r.qual)} <span class="hint">(맨 뒤 · 평소 보지 않음)</span></td></tr></table>`;
+      else if(r)body=`<table class="sheet"><tr><td>이름</td><td><input class="tx" data-pf="name" value="${esc(r.name)}"></td></tr><tr><td>DID 번호</td><td class="ro">${hex(r.num,4)}</td></tr><tr><td>진단 클래스</td><td class="ro">${esc(r.cls)}</td></tr><tr><td>DID 데이터</td><td class="ro">${esc(r.data)}</td></tr><tr><td>Qualifier</td><td class="ro">${esc(r.qual)}</td></tr></table>`;
+      else body='<div class="sheetnote">표에서 객체를 고르면 속성을 보입니다.</div>';}
+    else if(st.pane==='layout'){if(r&&r.layout){this.lay=this.lay||{sel:null,col:null,edit:null};body=`<div style="padding:6px;height:100%">${layoutHtml(r.layout,this.lay,'l')}</div>`;}
+      else body='<div class="sheetnote">DID를 고르면 데이터 배치를 보입니다(목업은 0x0100 Brake Status만).</div>';}
+    else body='<div class="sheetnote">마스터·디테일의 디테일(상태 그룹의 상태 등). 이 목록에는 없습니다.</div>';
+    return tabs+`<div class="tabbody">${body}</div>`;},
+  /* 여러 객체 속성 시트 [UI-D410]·[UI-R450-multi]: 값이 다르면 (여러 값), 넣으면 모두에 적용 */
+  multiSheet(ids){const rows=ids.map(id=>this.row(id)).filter(Boolean);const node=this.st.node;
+    const same=f=>{const vs=rows.map(f);return vs.every(v=>v===vs[0])?{same:true,v:vs[0]}:{same:false};};
+    let h=`<div class="sheetnote" data-m="M2-2">${rows.length}개 선택 · 값이 다른 칸은 <b>(여러 값)</b>입니다. 값을 넣으면 선택한 모든 ${node==='dtc'?'DTC':'DID'}에 한 명령으로 적용합니다. 공유 객체는 모든 사용 변형에 반영됩니다.</div><table class="sheet">`;
+    const n=same(r=>r.name);h+=`<tr><td>이름</td><td><input class="tx" data-mf="name" placeholder="${n.same?'':'(여러 값)'}" value="${n.same?esc(n.v):''}"></td></tr>`;
+    if(node==='dtc')for(const x of RI){const s=same(r=>r.a[x.key]);
+      if(x.kind==='enum')h+=`<tr><td>${esc(x.name)}</td><td><select class="tx" data-mr="${x.key}">${s.same?'':'<option value="__mixed" selected>(여러 값)</option>'}${x.req?'':'<option value="">(없음)</option>'}${x.choices.map(c=>`<option value="${c[0]}"${s.same&&s.v===c[0]?' selected':''}>${esc(c[1])}</option>`).join('')}</select></td></tr>`;
+      else h+=`<tr><td>${esc(x.name)}</td><td><input class="tx" data-mr="${x.key}" placeholder="${s.same?'':'(여러 값)'}" value="${s.same?esc(s.v):''}"></td></tr>`;}
+    return h+'</table>';},
+  dockHtml(){const st=this.st;const lf=st.lf;const counts={};for(const l of st.log)counts[l.type]=(counts[l.type]||0)+1;
+    const origins=['전체',...new Set(st.log.map(l=>l.origin))];
+    const shown=st.log.filter(l=>lf.types[l.type]&&(lf.origin==='전체'||l.origin===lf.origin)&&(!lf.text||(l.msg+' '+l.origin).toLowerCase().includes(lf.text.toLowerCase())));
+    const cls={'오류':'lt-err','경고':'lt-warn','정보':'lt-info','상태':'lt-stat'};
+    const sel=st.log.find(l=>l.id===st.logSel);
+    return `<div class="dh"><b>검증 · 작업 결과</b><span class="tab on" style="padding:2px 10px;border:1px solid #d5deeb;background:#fff">작업 기록</span><span class="hint">검증 결과 탭은 지금과 같습니다</span></div>
+      <div class="dtools">${['오류','경고','정보','상태'].map(t=>`<button class="tog${lf.types[t]?' on':''}" data-lt="${t}" data-tip="${t} 메시지 보이기/숨기기 [OW-R320]">${t} ${counts[t]||0}</button>`).join('')}
+        <span class="sep"></span><select class="tx" data-a="lorigin" style="padding:1px 4px" data-tip="출처 필터 [OW-R340]">${origins.map(o=>`<option${o===lf.origin?' selected':''}>${o}</option>`).join('')}</select>
+        <input class="tx" id="logfilter" style="width:150px;padding:1px 6px" placeholder="내용 필터" value="${esc(lf.text)}" data-tip="내용 필터 [OW-R350]">
+        <button class="tog" data-a="lreset" data-tip="모든 필터 초기화 [OW-R360]">필터 초기화</button><span class="sep"></span>
+        <button class="tog${st.auto?' on':''}" data-a="lauto" data-tip="새 메시지로 자동 스크롤 [OW-R420]">자동 스크롤</button>
+        <button class="tog${st.details?' on':''}" data-a="ldet" data-tip="오른쪽 상세 영역 [OW-R430]">상세</button>
+        <button class="tog" data-a="lcopy" data-tip="선택 메시지 복사 [OW-R225]">복사</button><button class="tog" data-a="lclear" data-tip="모든 메시지 지우기 [OW-R230]">지우기</button>
+        <span class="hint" style="margin-left:auto">필터 상태는 다음 실행에도 남습니다 [OW-R700]</span></div>
+      <div class="dockbody"><div class="logwrap"><table class="grid" style="width:100%"><colgroup><col style="width:52px"><col style="width:108px"><col style="width:74px"><col style="width:50px"><col></colgroup><thead><tr><th>종류</th><th>시각</th><th>출처</th><th>링크</th><th>내용</th></tr></thead><tbody>
+        ${shown.map(l=>`<tr class="${l.id===st.logSel?'sel':''}" data-log="${l.id}"><td class="${cls[l.type]}">${l.type}</td><td class="num">${l.time}</td><td>${esc(l.origin)}</td><td>${l.link?`<a class="link" data-go="${l.link.node}:${l.link.id}" title="객체로 이동 [OW-R240]">↗</a>`:''}</td><td title="${esc(l.msg)}">${esc(l.msg)}</td></tr>`).join('')}
+        ${shown.length?'':'<tr><td colspan="5" class="muted">표시할 메시지가 없습니다(필터 확인).</td></tr>'}</tbody></table></div>
+        ${st.details?`<div class="logdet">${sel?`<b>종류</b> ${sel.type}\n<b>시각</b> ${sel.time}\n<b>출처</b> ${esc(sel.origin)}\n\n${esc(sel.detail||sel.msg)}`:'메시지를 한 줄 고르면 여기에 전체 내용이 보입니다 [OW-R050].'}</div>`:''}</div>`;},
+  menuHtml(){const st=this.st;const m=st.menu;const ids=[...st.sel];
+    if(m.empty)return `<div class="menu" style="left:${m.x}px;top:${m.y}px"><div data-a="new">새 DTC…<span>Ctrl+Ins</span></div><hr><div class="off">(선택한 항목이 없습니다) [UI-R350-Empty]</div></div>`;
+    const col=this.cols(st.node).find(c=>c.k===st.cur?.col);const canCopy=st.node==='dtc'&&ids.length>1&&st.cur&&st.cur.col.startsWith('a:');
+    return `<div class="menu" style="left:${m.x}px;top:${m.y}px">
+      <div data-a="props">속성…<span>Alt+Enter</span></div>
+      <div data-a="edit" class="${col&&col.edit?'':'off'}">셀 편집 (${col?esc(col.t):''})<span>F2</span></div>
+      <div data-a="copyval" class="${canCopy?'':'off'}">선택한 ${ids.length}개 DTC에 이 값 복사<span>[DTCUI-R035]</span></div>
+      <hr><div data-a="copypath">이름 경로 복사</div><div data-a="copy">표 복사 (보이는 그대로)<span>Ctrl+C</span></div><hr>
+      <div data-a="new">새 DTC…<span>Ctrl+Ins</span></div><div data-a="del">삭제…<span>Del</span></div></div>`;},
+  findHtml(){const f=this.st.find;return `<div class="float" id="findwin" style="left:${f.x}px;top:${f.y}px;width:420px" data-m="M3-1">
+      <div class="fh" id="findhead">찾기 <span class="hint" style="font-weight:400;margin-left:8px">비모달 · 닫아도 F3이 동작</span><button class="x" data-a="findclose" title="닫기 (Esc)">✕</button></div>
+      <div class="fb"><div class="form" style="grid-template-columns:78px minmax(0,1fr)">
+        <label>찾을 내용</label><div><input class="tx" id="findterm" list="findhist" style="width:100%" value="${esc(f.term)}" placeholder="이름·Qualifier·코드·요청 바이트(22 F1 90)"><datalist id="findhist">${f.hist.map(h=>`<option value="${esc(h)}">`).join('')}</datalist></div>
+        <label>범위</label><div>${[['name','이름'],['qual','Qualifier'],['all','이름·Qualifier·설명·식별자·DTC·서비스·NRC'],['req','요청 바이트(고정 요청)']].map(o=>`<label class="row" style="margin:2px 0"><input type="radio" name="fscope" value="${o[0]}"${f.scope===o[0]?' checked':''}> ${o[1]}</label>`).join('')}</div>
+        <label>조건</label><div><label class="row"><input type="checkbox" data-fo="mcase"${f.mcase?' checked':''}> 대소문자 구분</label><label class="row"><input type="checkbox" data-fo="word"${f.word?' checked':''}> 단어 단위</label><label class="row"><input type="checkbox" data-fo="whole"${f.whole?' checked':''}> 전체 일치</label></div></div>
+        <div class="row" style="margin-top:10px;justify-content:flex-end"><span class="hint" style="margin-right:auto">${f.hits.length?`${f.pos+1} / ${f.hits.length}`:''}</span><button class="btn primary" data-a="findgo">찾기</button><button class="btn" data-a="findnext">다음 찾기  F3</button><button class="btn" data-a="findall">모두 찾기</button></div></div></div>`;},
+  colinfoHtml(cols){return `<div class="float" style="left:420px;top:210px;width:520px" data-m="M1-7"><div class="fh">열 정보 · ${this.st.node==='dtc'?'DTC':'DID'} 목록<button class="x" data-a="colinfo">✕</button></div><div class="fb" style="max-height:300px;overflow:auto"><table class="grid" style="width:100%"><thead><tr><th>열</th><th>Qualifier</th><th>설명</th></tr></thead><tbody>${cols.map(c=>`<tr><td>${esc(c.t)}</td><td class="dim">${c.ri?c.ri.key:c.k==='qual'?'—':'(기본 속성)'}</td><td>${esc((c.tip||'').split('\n').slice(1).join(' ')||'')}</td></tr>`).join('')}</tbody></table><div class="hint" style="margin-top:6px">열 머리에 마우스를 올려도 같은 내용이 보입니다(How to Edit DTCs Efficiently).</div></div></div>`;},
+  focusList(){const lw=$('#listwrap');if(lw)lw.focus({preventScroll:true});this.scrollCur();},
+  scrollCur(){const c=$('#grid td.cur');if(c)c.scrollIntoView({block:'nearest',inline:'nearest'});},
+  /* 셀 편집 [LIST-R410]·[LIST-R420]·[UI-R300] */
+  startEdit(draftKey){const st=this.st;if(!st.cur)return;const col=this.cols(st.node).find(c=>c.k===st.cur.col);
+    if(!col||!col.edit){this.addLog('정보','편집',`'${col?col.t:''}' 열은 목록에서 바로 고칠 수 없습니다. 속성 대화상자(Alt+Enter)를 쓰세요 [CM-R120].`,null);this.renderDock();return;}
+    const ids=st.sel.has(st.cur.id)&&st.sel.size>1?[...st.sel]:[st.cur.id];st.edit={ids,col:col.k,lead:st.cur.id,draft:draftKey??null,bad:false};this.render();},
+  commitEdit(move){const st=this.st;const e=st.edit;if(!e)return;const el=$('#celled');const col=this.cols(st.node).find(c=>c.k===e.col);let v=el.value;
+    if(col.edit==='code'){const n=parseInt(v.replace(/^0x/i,''),16);const dup=DTC.find(d=>d.code===n&&!e.ids.includes(d.id));
+      if(isNaN(n)||n<0||n>0xFFFFFF||dup||e.ids.length>1){st.edit.bad=true;st.edit.draft=v;this.render();$('#stip').textContent=e.ids.length>1?'DTC 코드는 한 행씩 고칩니다.':dup?'같은 코드의 DTC가 있습니다.':'24비트 16진수(예: 0x401013)를 넣으세요.';return;}v=n;}
+    else if(col.edit==='enum')v=v===''?null:Number(v);
+    else if(col.k==='name'&&!String(v).trim()){st.edit.bad=true;this.render();$('#stip').textContent='이름을 입력하세요.';return;}
+    for(const id of e.ids){const r=this.row(id);if(col.k.startsWith('a:'))r.a[col.k.slice(2)]=v;else r[col.k]=v;if(col.k==='name'&&r.qualAuto!==false&&st.node==='dtc'){}}
+    st.dirty=true;this.addLog('정보','편집',`${e.ids.length}개 행의 '${col.t}'을(를) 바꿨습니다(한 명령).`,e.ids.length===1?{node:st.node,id:e.ids[0]}:null);st.edit=null;
+    if(move){const cols=this.cols(st.node).filter(c=>c.edit);const v2=this.visible();let ri=v2.findIndex(r=>r.id===st.cur.id);let ci=cols.findIndex(c=>c.k===st.cur.col);
+      ci+=move;if(ci>=cols.length){ci=0;ri++;}if(ci<0){ci=cols.length-1;ri--;}
+      if(v2[ri]){st.cur={id:v2[ri].id,col:cols[ci].k};st.sel=new Set([v2[ri].id]);st.anchor=v2[ri].id;this.startEdit();return;}
+      if(move>0&&st.node==='dtc'){const nc=this.nextCode(true);if(nc){const d=mkDtc(nc.code,'New DTC',5,'','','',1);d.qual=qualFromName(d.name);d.qualAuto=true;DTC.push(d);
+        this.addLog('정보','편집',`마지막 칸에서 Tab: 새 DTC ${hex(nc.code,6)}을(를) 만들었습니다 [UI-R300-TABLast].`,{node:'dtc',id:d.id});st.sel=new Set([d.id]);st.anchor=d.id;st.cur={id:d.id,col:cols[0].k};this.startEdit();return;}}}
+    this.render();this.focusList();},
+  cancelEdit(){this.st.edit=null;this.render();this.focusList();},
+  copyValue(){const st=this.st;const ids=[...st.sel];if(!(st.node==='dtc'&&ids.length>1&&st.cur&&st.cur.col.startsWith('a:'))){toast('여러 DTC를 고르고, 복사할 값의 칸(레코드 항목 열)을 마지막으로 누르세요.');return;}
+    const src=this.row(st.cur.id);const key=st.cur.col.slice(2);for(const id of ids)if(id!==src.id)this.row(id).a[key]=src.a[key];st.dirty=true;
+    this.addLog('정보','편집',`${hex(src.code,6)}의 '${RI.find(r=>r.key===key).name}' 값을 다른 ${ids.length-1}개 DTC에 복사했습니다 [DTCOP-R035].`,null);st.menu=null;this.render();},
+  openProps(){const st=this.st;if($('#s1dlg')&&$('#s1dlg').innerHTML)return;if(!st.cur){toast('객체를 고르세요.');return;}if(st.node!=='dtc'){toast('목업에서는 DTC 속성 대화상자만 있습니다.');return;}
+    st.menu=null;new DtcDialog($('#s1dlg'),st.cur.id,{onDone:(changed,d)=>{if(changed){st.dirty=true;this.addLog('정보','편집',`${hex(d.code,6)} 속성을 바꿨습니다(한 명령).`,{node:'dtc',id:d.id});}st.cur={id:d.id,col:st.cur.col};st.sel=new Set([d.id]);this.render();this.focusList();}});},
+  newDtc(fromMagic){const nc=this.nextCode(fromMagic);if(!nc){toast('빈 번호가 없습니다.');return;}const st=this.st;st.menu=null;
+    const host=$('#s1dlg');host.innerHTML=`<div class="overlay"><div class="dlg" style="width:520px;height:330px" data-m="M1-5"><div class="dh">새 DTC<button class="x" data-a="nclose">✕</button></div><div class="db">
+      <div class="form"><label>DTC 코드</label><div class="row"><input class="tx" id="ncode" value="${hex(nc.code,6)}" style="width:130px"><span class="pill ok">${esc(nc.why)}</span></div>
+      <label>이름</label><input class="tx" id="nname" value="" placeholder="예: Pump Motor - Overtemperature">
+      <label>Qualifier</label><div class="row"><span id="nqual" class="pill grey">DTC_${nc.code.toString(16).toUpperCase()}</span><span class="linkstate auto">이름을 따라 자동</span></div></div>
+      <div class="hint">번호: 툴바·메뉴로 만들면 선택 행(첫 행이 아니면 그 위 행) 다음의 빈 번호, 표 끝 행으로 만들면 마지막 행 다음의 빈 번호입니다 [UI-R335]. Corrective action은 템플릿 기본값으로 채웁니다.</div></div>
+      <div class="df"><span class="sp"></span><button class="btn primary" data-a="nok">확인</button><button class="btn" data-a="nclose">취소</button></div><div class="grip"></div></div></div>`;
+    const name=$('#nname'),qual=$('#nqual');name.focus();name.oninput=()=>{qual.textContent=qualFromName(name.value)||('DTC_'+$('#ncode').value.replace(/^0x/i,'').toUpperCase());};
+    host.onclick=e=>{const a=e.target.closest('[data-a]');if(!a)return;if(a.dataset.a==='nclose'){host.innerHTML='';this.focusList();}
+      if(a.dataset.a==='nok'){const code=parseInt($('#ncode').value.replace(/^0x/i,''),16);if(isNaN(code)||DTC.some(d=>d.code===code)){toast('코드를 확인하세요(중복 또는 형식).');return;}
+        const nm=name.value.trim()||'New DTC';const d=mkDtc(code,nm,5,'','','',1);d.qual=qual.textContent;d.qualAuto=true;DTC.push(d);host.innerHTML='';st.sel=new Set([d.id]);st.anchor=d.id;st.cur={id:d.id,col:'name'};st.dirty=true;
+        this.addLog('정보','편집',`새 DTC ${hex(code,6)}을(를) 만들고 선택했습니다 [UI-R340-SelIns].`,{node:'dtc',id:d.id});this.render();this.focusList();}};
+    host.onkeydown=e=>{if(e.key==='Escape'){host.innerHTML='';this.focusList();}if(e.key==='Enter'){e.preventDefault();$('[data-a=nok]',host).click();}e.stopPropagation();};},
+  runFind(mode){const f=this.st.find;const term=($('#findterm')||{}).value??f.term;f.term=term;
+    const sc=$('input[name=fscope]:checked');if(sc)f.scope=sc.value;$$('[data-fo]').forEach(c=>f[c.dataset.fo]=c.checked);
+    if(!term.trim()){toast('찾을 내용을 넣으세요.');return;}
+    if(!f.hist.includes(term))f.hist.unshift(term);
+    if(mode!=='next'||f.lastKey!==JSON.stringify([term,f.scope,f.mcase,f.word,f.whole])){f.hits=this.hits();f.pos=-1;f.lastKey=JSON.stringify([term,f.scope,f.mcase,f.word,f.whole]);}
+    if(mode==='all'){for(const h of f.hits)this.addLog('정보','찾기',`${h.q}  ·  ${h.label}`,{node:h.node,id:h.id},`찾기 "${term}" 결과\n${h.q}\n이름 경로: /Demo ECU/Base Variant/${h.node.toUpperCase()}/${h.name}`);
+      this.addLog('상태','찾기',`"${term}": ${f.hits.length}건. 링크(↗)를 누르면 이동합니다 [SRCH-R200].`,null);this.st.lf.types['정보']=true;this.render();return;}
+    if(!f.hits.length){this.addLog('정보','찾기',`"${term}"와 맞는 객체가 없습니다.`,null);this.render();return;}
+    f.pos=mode==='first'?0:(f.pos+1)%f.hits.length;const h=f.hits[f.pos];this.goto(h.node,h.id,`찾기: ${h.label} (${f.pos+1}/${f.hits.length})`);},
+  hits(){const f=this.st.find;const norm=s=>f.mcase?String(s??''):String(s??'').toLowerCase();const t=norm(f.term.trim());
+    const test=s=>{const x=norm(s);if(f.whole)return x===t;if(f.word)return new RegExp('(^|[\\s\\-_/])'+reEsc(t)+'($|[\\s\\-_/])').test(x);return x.includes(t);};
+    const bytes=s=>String(s).replace(/0x/gi,'').replace(/\s+/g,'').toUpperCase();
+    const out=[];
+    for(const r of DTC){const fs=f.scope==='name'?[r.name]:f.scope==='qual'?[r.qual]:f.scope==='req'?[]:[r.name,r.qual,r.desc,hex(r.code,6)];
+      if(fs.some(test))out.push({node:'dtc',id:r.id,name:r.name,q:`qpath:/Base_Variant/[DTC]${r.qual}`,label:`${hex(r.code,6)}  ${r.name}`});}
+    for(const r of DID){const req='22 '+r.num.toString(16).toUpperCase().padStart(4,'0').replace(/(..)(..)/,'$1 $2');
+      const fs=f.scope==='name'?[r.name]:f.scope==='qual'?[r.qual]:f.scope==='req'?null:[r.name,r.qual,hex(r.num,4),r.data];
+      if(fs===null){if(bytes(req)===bytes(f.term))out.push({node:'did',id:r.id,name:r.name,q:`qpath:/Base_Variant/[DID]${r.qual}`,label:`${hex(r.num,4)}  ${r.name} · 요청 ${req}`});}
+      else if(fs.some(test))out.push({node:'did',id:r.id,name:r.name,q:`qpath:/Base_Variant/[DID]${r.qual}`,label:`${hex(r.num,4)}  ${r.name}`});}
+    return out;},
+  validate(){let n=0;for(const d of DTC){if(!d.a.SetCondition){this.addLog('경고','검증',`${hex(d.code,6)} ${d.name}: Set condition이 비어 있습니다.`,{node:'dtc',id:d.id},`규칙 예시(목업): 선택 레코드 항목이 비어 있음\n수정 안내: DTC 목록에서 F2로 입력하거나 값 복사를 쓰세요.`);n++;}}
+    this.addLog('상태','검증',`검증 완료: 경고 ${n}건 (F9 · F5)`,null);this.render();},
+  renderDock(){const d=$('.dock');if(d){d.innerHTML=this.dockHtml();const lw=$('.logwrap');if(lw&&this.st.auto)lw.scrollTop=lw.scrollHeight;}},
+  bind(){const st=this.st;const win=$('#s1win');
+    win.onmouseover=e=>{const t=e.target.closest('[data-tip]');if(t)$('#stip').textContent=t.dataset.tip;};
+    win.oncontextmenu=e=>{const wrap=e.target.closest('#listwrap');if(!wrap)return;e.preventDefault();const rect=win.getBoundingClientRect();const tr=e.target.closest('tr[data-id]');
+      if(tr){const id=tr.dataset.id;if(!st.sel.has(id)){st.sel=new Set([id]);st.anchor=id;}const td=e.target.closest('td[data-c]');st.cur={id,col:td?td.dataset.c:(st.cur?.col||'code')};st.menu={x:e.clientX-rect.left,y:e.clientY-rect.top};}
+      else st.menu={x:e.clientX-rect.left,y:e.clientY-rect.top,empty:true};st.focus='list';this.render();};
+    win.onclick=e=>{const t=e.target;if(t.closest('#s1dlg'))return;
+      if(st.menu&&!t.closest('.menu')){st.menu=null;this.render();return;}
+      if(st.pathOpen&&!t.closest('.combo')){st.pathOpen=false;this.render();return;}
+      const nodeEl=t.closest('[data-node]');if(nodeEl){st.focus='tree';this.enter(nodeEl.dataset.node);return;}
+      if(t.closest('.tree')){st.focus='tree';this.render();$('#tree').focus();return;}
+      const pv=t.closest('[data-pane]');if(pv){st.pane=pv.dataset.pane;st.focus='pane';this.render();return;}
+      const go=t.closest('[data-go]');if(go){const [n,id]=go.dataset.go.split(':');this.goto(n,id,null);return;}
+      const lr=t.closest('tr[data-log]');if(lr){st.logSel=Number(lr.dataset.log);this.renderDock();return;}
+      const lt=t.closest('[data-lt]');if(lt){st.lf.types[lt.dataset.lt]=!st.lf.types[lt.dataset.lt];this.renderDock();return;}
+      const pg=t.closest('[data-path]');if(pg){st.pathOpen=false;const r=this.resolve(pg.dataset.path);if(r){if(r.id)this.goto(r.node,r.id,`경로로 이동: ${pg.dataset.path}`);else this.enter(r.node);}return;}
+      if(t.closest('[data-pr],[data-mr],[data-pf],[data-mf]'))return;
+      const lg=t.closest('[data-lg]');if(lg&&this.lay){this.lay.sel=Number(lg.dataset.lg);st.focus='pane';this.render();return;}
+      const lm=t.closest('td[data-lr]');if(lm&&this.lay){this.lay.sel=Number(lm.dataset.lr);this.lay.col=lm.dataset.k;st.focus='pane';this.render();return;}
+      return this.clickRest(e);};
+    win.ondblclick=e=>{const td=e.target.closest('#listwrap td[data-c]');if(td){this.openProps();}};
+    win.onmousedown=e=>{const rz=e.target.closest('[data-rz]');if(rz){e.preventDefault();const k=rz.dataset.rz;const th=rz.parentElement;const startX=e.clientX,startW=th.getBoundingClientRect().width;
+      const col=$$('#grid col')[this.cols(st.node).findIndex(c=>c.k===k)+1];
+      const mm=ev=>{const nw=Math.round(Math.max(40,startW+ev.clientX-startX));col.style.width=nw+'px';st.widths[st.node][k]=nw;};
+      const mu=()=>{document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',mu);};document.addEventListener('mousemove',mm);document.addEventListener('mouseup',mu);return;}
+      const fh=e.target.closest('#findhead');if(fh&&!e.target.closest('button')){const fw=$('#findwin');const sx=e.clientX,sy=e.clientY,ox=st.find.x,oy=st.find.y;
+        const mm=ev=>{st.find.x=ox+ev.clientX-sx;st.find.y=oy+ev.clientY-sy;fw.style.left=st.find.x+'px';fw.style.top=st.find.y+'px';};
+        const mu=()=>{document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',mu);};document.addEventListener('mousemove',mm);document.addEventListener('mouseup',mu);}};
+    const fi=$('#filterin');fi.oninput=()=>{st.filter=fi.value;const tb=$('#grid tbody');tb.innerHTML=this.bodyHtml(this.cols(st.node));
+      const chip=$('.filters .chip');const txt=`${this.visible().length} / ${this.rows(st.node).length} 표시`;
+      if(st.filter&&!chip){fi.parentElement.insertAdjacentHTML('afterend',`<span class="chip">${txt}<button data-a="clearfilter" title="필터 지우기">✕</button></span>`);}
+      else if(chip){if(st.filter)chip.firstChild.textContent=txt;else chip.remove();}
+      $('.pageinfo').firstChild.textContent=`${this.visible().length}개 표시 · 헤더를 누르면 정렬, Ctrl+누르기로 2단 정렬 · 열 경계를 끌어 너비 조절(이 목록 종류에 기억) · 여러 행: Ctrl/Shift+클릭`;};
+    fi.onkeydown=e=>{if(e.key==='Enter'||e.key==='ArrowDown'){e.preventDefault();this.focusList();}e.stopPropagation();};
+    const pin=$('#pathin');pin.onkeydown=e=>{e.stopPropagation();if(e.key==='Enter')this.goPath(pin.value);};
+    win.oninput=e=>{const lfi=e.target;if(lfi.id!=='logfilter')return;st.lf.text=lfi.value;const pos=lfi.selectionStart;this.renderDock();const n=$('#logfilter');n.focus();n.setSelectionRange(pos,pos);};
+    win.onchange=e=>{const t=e.target;
+      if(t.dataset.a==='lorigin'){st.lf.origin=t.value;this.renderDock();return;}
+      if(t.name==='fscope'||t.dataset.fo){st.find.hits=[];st.find.lastKey=null;return;}
+      const r=st.cur&&this.row(st.cur.id);
+      if(t.dataset.pf&&r){if(!t.value.trim()){toast('이름을 입력하세요.');t.value=r.name;return;}r.name=t.value;st.dirty=true;this.addLog('정보','편집',`이름을 바꿨습니다: ${t.value}`,{node:st.node,id:r.id});this.render();return;}
+      if(t.dataset.pr&&r){const ri=RI.find(x=>x.key===t.dataset.pr);r.a[ri.key]=ri.kind==='enum'?(t.value===''?null:Number(t.value)):t.value;st.dirty=true;this.addLog('정보','편집',`${hex(r.code,6)}의 '${ri.name}'을(를) 바꿨습니다.`,{node:'dtc',id:r.id});this.render();return;}
+      if(t.dataset.mf||t.dataset.mr){if(t.value==='__mixed')return;const ids=[...st.sel];
+        for(const id of ids){const x=this.row(id);if(t.dataset.mf)x.name=t.value;else{const ri=RI.find(q=>q.key===t.dataset.mr);x.a[ri.key]=ri.kind==='enum'?(t.value===''?null:Number(t.value)):t.value;}}
+        st.dirty=true;this.addLog('정보','편집',`${ids.length}개 객체에 '${t.dataset.mf?'이름':RI.find(q=>q.key===t.dataset.mr).name}' 값을 적용했습니다(한 명령) [UI-D410].`,null);this.render();}};
+    const fwn=$('#findwin');if(fwn){fwn.onkeydown=e=>{e.stopPropagation();if(e.key==='Enter'){e.preventDefault();this.runFind('next');}if(e.key==='Escape'){st.find.open=false;this.render();this.focusList();}if(e.key==='F3'){e.preventDefault();this.runFind('next');}};}
+  },
+  goPath(v){const st=this.st;const r=this.resolve(v);const pin=$('#pathin');
+    if(!r){this.addLog('오류','탐색',`경로를 찾을 수 없습니다: ${v}. 현재 선택을 유지합니다.`,null);this.renderDock();if(pin)pin.classList.add('bad');return;}
+    if(!st.paths.includes(v))st.paths.push(v);if(r.id)this.goto(r.node,r.id,`경로로 이동: ${v}`);else this.enter(r.node);},
+  clickRest(e){const st=this.st;const t=e.target;
+    const a=t.closest('[data-a]');if(a){this.action(a.dataset.a,e);return;}
+    const th=t.closest('#grid th[data-col]');if(th&&!t.closest('[data-rz]')){const k=th.dataset.col;const s=st.sorts[st.node];const ex=s.find(x=>x.k===k);
+      if(e.ctrlKey||e.metaKey){if(ex)ex.d=-ex.d;else s.push({k,d:1});}else st.sorts[st.node]=[{k,d:ex&&s.length===1?-ex.d:1}];this.render();return;}
+    const td=t.closest('#grid td[data-c]');if(td){const id=td.parentElement.dataset.id;st.focus='list';
+      if(st.edit){this.commitEdit();}
+      if(e.shiftKey&&st.anchor){const v=this.visible();const a1=v.findIndex(r=>r.id===st.anchor),a2=v.findIndex(r=>r.id===id);const [lo,hi]=[Math.min(a1,a2),Math.max(a1,a2)];if(!(e.ctrlKey||e.metaKey))st.sel=new Set();for(let i=lo;i<=hi;i++)st.sel.add(v[i].id);}
+      else if(e.ctrlKey||e.metaKey){if(st.sel.has(id)&&st.cur&&st.cur.id===id&&st.cur.col===td.dataset.c)st.sel.delete(id);else st.sel.add(id);st.anchor=id;}
+      else{const dt=Date.now()-(this.lastClick||0);const key=id+'|'+td.dataset.c;
+        if(key===this.lastKey&&dt<400){this.lastClick=0;this.lastKey=null;this.openProps();return;}
+        const again=st.sel.size===1&&st.sel.has(id)&&st.cur&&st.cur.id===id&&st.cur.col===td.dataset.c&&dt>600;st.sel=new Set([id]);st.anchor=id;st.cur={id,col:td.dataset.c};this.lastClick=Date.now();this.lastKey=key;
+        if(again){this.startEdit();return;}}
+      st.cur={id,col:td.dataset.c};if(e.shiftKey||e.ctrlKey||e.metaKey){this.lastClick=Date.now();this.lastKey=null;}this.render();this.focusList();return;}
+    if(t.closest('#listwrap')){st.focus='list';this.render();this.focusList();return;}
+    if(t.closest('#pane')&&!t.closest('input,select,textarea,button')){st.focus='pane';this.render();$('#pane').focus();}},
+  action(act,e){const st=this.st;
+    switch(act){
+      case 'back':this.back(-1);break;case 'fwd':this.back(1);break;
+      case 'pathdrop':st.pathOpen=!st.pathOpen;this.render();break;
+      case 'copypath':toast('복사: '+this.path());break;
+      case 'pathgo':this.goPath($('#pathin').value);break;
+      case 'clearfilter':st.filter='';this.render();this.focusList();break;
+      case 'full':st.full=true;this.render();this.focusList();break;
+      case 'colinfo':st.colinfo=!st.colinfo;this.render();break;
+      case 'props':this.openProps();break;
+      case 'edit':st.menu=null;this.startEdit();break;
+      case 'copyval':this.copyValue();break;
+      case 'copy':st.menu=null;toast(`표 복사: ${st.sel.size}행 (보이는 열·표시 형식 그대로) [LIST-R100]`);this.render();break;
+      case 'del':st.menu=null;toast('삭제는 영향 계산 뒤 확인합니다(지금과 같음).');this.render();break;
+      case 'new':this.newDtc(false);break;case 'magic':this.newDtc(true);break;
+      case 'find':st.find.open=true;this.render();setTimeout(()=>{const ft=$('#findterm');if(ft){ft.focus();ft.select();}},0);break;
+      case 'findclose':st.find.open=false;this.render();this.focusList();break;
+      case 'findgo':this.runFind('first');break;case 'findnext':this.runFind('next');break;case 'findall':this.runFind('all');break;
+      case 'validate':this.validate();break;
+      case 'resetview':st.full=false;st.details=false;st.find.x=560;st.find.y=120;st.widths={dtc:{},did:{}};this.addLog('상태','보기','보기를 처음 배치로 되돌렸습니다(분할 위치·결과 창·열 너비) [MENU-R1135].',null);this.render();break;
+      case 'lreset':st.lf={types:{'오류':true,'경고':true,'정보':true,'상태':true},origin:'전체',text:''};this.renderDock();break;
+      case 'lauto':st.auto=!st.auto;this.renderDock();break;case 'ldet':st.details=!st.details;this.renderDock();break;
+      case 'lcopy':toast(st.logSel?'선택 메시지를 복사했습니다.':'복사할 메시지를 고르세요.');break;
+      case 'lclear':st.log=[];st.logSel=null;this.renderDock();break;}},
+  key(e){const st=this.st;if(!$('#s1win'))return;this.lastKey=null;
+    if($('#s1dlg').innerHTML)return;
+    const inEdit=!!st.edit;const tag=(e.target.tagName||'').toLowerCase();const typing=(tag==='input'||tag==='textarea'||tag==='select')&&e.target.id!=='celled';
+    if(inEdit&&e.target.id==='celled'){
+      if(e.key==='Enter'){e.preventDefault();this.commitEdit();}
+      else if(e.key==='Escape'){e.preventDefault();this.cancelEdit();}
+      else if(e.key==='Tab'){e.preventDefault();this.commitEdit(e.shiftKey?-1:1);}
+      return;}
+    if(e.key==='F3'){e.preventDefault();if(!st.find.term){st.find.open=true;this.render();return;}this.runFind('next');return;}
+    if(e.key==='F9'||e.key==='F5'){e.preventDefault();this.validate();return;}
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='f'){e.preventDefault();if(e.shiftKey)this.action('find');else{const fi=$('#filterin');fi.focus();fi.select();}return;}
+    if(e.key==='F6'){e.preventDefault();const order=['tree','list','pane'];st.focus=order[(order.indexOf(st.focus)+(e.shiftKey?2:1))%3];this.render();const el={tree:'#tree',list:'#listwrap',pane:'#pane'}[st.focus];$(el).focus();$('#stip').textContent=`F6: 포커스 → ${ {tree:'트리',list:'목록',pane:'선택 객체'}[st.focus] }`;return;}
+    if(e.altKey&&e.key==='ArrowLeft'){e.preventDefault();this.back(-1);return;}
+    if(e.altKey&&e.key==='ArrowRight'){e.preventDefault();this.back(1);return;}
+    if(e.altKey&&e.key==='Enter'){e.preventDefault();this.openProps();return;}
+    if(e.key==='Escape'){if(st.full){st.full=false;this.render();this.focusList();return;}if(st.menu){st.menu=null;this.render();return;}if(st.find.open){st.find.open=false;this.render();return;}}
+    if(typing||st.focus!=='list')return;
+    const v=this.visible();const cols=this.cols(st.node);
+    if(e.key==='F2'){e.preventDefault();this.startEdit();return;}
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='c'){e.preventDefault();this.action('copy');return;}
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();let i=v.findIndex(r=>r.id===st.cur?.id);i=Math.max(0,Math.min(v.length-1,i+(e.key==='ArrowDown'?1:-1)));const id=v[i].id;
+      if(e.shiftKey)st.sel.add(id);else{st.sel=new Set([id]);st.anchor=id;}st.cur={id,col:st.cur?.col||cols[0].k};this.render();this.focusList();return;}
+    if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();let c=cols.findIndex(x=>x.k===st.cur?.col);c=Math.max(0,Math.min(cols.length-1,c+(e.key==='ArrowRight'?1:-1)));st.cur={id:st.cur.id,col:cols[c].k};this.render();this.focusList();return;}
+    if(e.key==='Delete'){this.action('del');return;}
+    if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&st.cur){const col=cols.find(c=>c.k===st.cur.col);if(col&&col.edit&&col.edit!=='enum'){e.preventDefault();this.startEdit(e.key);}}}
+};
+
+/* ------------------------------------------------------------------ S3 속성 대화상자 */
+const S3={
+  render(){const host=$('#stage');
+    host.innerHTML=`<div class="two" style="grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start;min-width:1040px">
+      <div><div class="hint" style="margin-bottom:6px">DTC 속성 대화상자 (단독 표시). 모서리를 끌어 크기를 바꿀 수 있습니다.</div><div id="s3dlg"></div></div>
+      <div><div class="hint" style="margin-bottom:6px">데이터 객체 속성: 이름 → Qualifier, 값 형식 전환</div><div id="s3do"></div></div></div>`;
+    new DtcDialog($('#s3dlg'),'t401013',{standalone:true,onDone:(c)=>{if(c===false)toast('취소: 바꾼 내용을 버렸습니다(단독 표시라 창은 남습니다).');}});
+    this.renderDo();},
+  dobj:{name:'Pump temperature',qual:'Pump_temperature',linked:true,fmt:'dec',def:65,con:'',bits:8,fill:true},
+  renderDo(){const o=this.dobj;const f=v=>v===''||v==null?'':o.fmt==='hex'?'0x'+Number(v).toString(16).toUpperCase().padStart(o.fill?Math.ceil(o.bits/4):1,'0'):o.fmt==='bin'?'0b'+Number(v).toString(2).padStart(o.bits,'0'):String(v);
+    $('#s3do').innerHTML=`<div class="dlg" style="width:100%;height:420px;resize:both"><div class="dh">데이터 객체 속성<button class="x">✕</button></div><div class="db">
+      <div class="form"><label>이름</label><input class="tx" id="doname" value="${esc(o.name)}">
+      <label>Qualifier</label><div class="row" data-m="M2-1"><input class="tx" id="doqual" value="${esc(o.qual)}" style="flex:1"><span class="linkstate ${o.linked?'auto':'man'}">${o.linked?'자동':'직접'}</span></div>
+      <label>데이터 타입</label><select class="tx"><option>UInt8 °C (1 Byte)</option></select>
+      <label>값 형식</label><span class="seg" data-m="M2-5">${[['dec','10진'],['hex','16진'],['bin','2진']].map(x=>`<button data-dofmt="${x[0]}" class="${o.fmt===x[0]?'on':''}">${x[1]}</button>`).join('')}</span>
+      <label>기본값</label><input class="tx" id="dodef" value="${esc(f(o.def))}">
+      <label>상수</label><input class="tx" id="docon" value="${esc(f(o.con))}" placeholder="(정하지 않음)">
+      <label></label><label class="row"><input type="checkbox" id="dofill"${o.fill?' checked':''}> 16진 입력 때 앞자리 0 채우기(설정)</label></div>
+      <div class="hint">한글 이름을 넣어 보세요(예: 펌프 온도). 로마자로 바꿀 수 없는 글자뿐이면 종류+번호로 만듭니다(결정 필요). 값 형식은 표시만 바꾸고 저장 값은 같습니다. BCD 인코딩은 10진·16진만, Unsigned/Signed에는 BCD 형식을 두지 않습니다([VALUI-R050]·[VALUI-R020-BCD]).</div></div>
+      <div class="df"><span class="sp"></span><button class="btn primary">확인</button><button class="btn">취소</button><button class="btn">적용</button></div><div class="grip"></div></div>`;
+    const nm=$('#doname'),q=$('#doqual');
+    nm.oninput=()=>{o.name=nm.value;if(o.linked){o.qual=qualFromName(o.name)||'DataObject_7';q.value=o.qual;}};
+    q.oninput=()=>{o.qual=q.value;const l=q.value===(qualFromName(o.name)||'DataObject_7');if(l!==o.linked){o.linked=l;this.renderDo();const n=$('#doqual');n.focus();n.setSelectionRange(n.value.length,n.value.length);}};
+    const parse=s=>{s=s.trim();if(!s)return'';if(/^0x/i.test(s))return parseInt(s.slice(2),16);if(/^0b/i.test(s))return parseInt(s.slice(2),2);return parseInt(s,o.fmt==='hex'?16:o.fmt==='bin'?2:10);};
+    $('#dodef').onchange=e=>{const v=parse(e.target.value);if(v!==''&&(isNaN(v)||v<0||v>255)){e.target.classList.add('bad');toast('0..255 범위의 값을 넣으세요.');return;}o.def=v;this.renderDo();};
+    $('#docon').onchange=e=>{const v=parse(e.target.value);if(v!==''&&(isNaN(v)||v<0||v>255)){e.target.classList.add('bad');return;}o.con=v;this.renderDo();};
+    $('#dofill').onchange=e=>{o.fill=e.target.checked;this.renderDo();};
+    $$('[data-dofmt]').forEach(b=>b.onclick=()=>{o.fmt=b.dataset.dofmt;this.renderDo();});}
+};
+
+/* ------------------------------------------------------------------ S4 인스턴스 페이지·데이터 배치 */
+const S4={
+  st:{svc:3,tab:'zz',nr:false,lay:{sel:4,col:'name',edit:null,view:'all'},tip:null,name:'Pump Motor',editName:false},
+  svcs:[
+    {role:'Read',used:'on',proto:'(0x22) ReadDataByIdentifier',req:['22 02 00'],pos:['62 02 00',{t:'xx'}],neg:['7F 22',{t:'rc'}],phys:true,func:false,nr:[0x13,0x31]},
+    {role:'ReturnControlToECU',used:'on',proto:'(0x2F) InputOutputControlByIdentifier',req:['2F 02 00 00'],pos:['6F 02 00 00',{t:'zz'}],neg:['7F 2F',{t:'rc'}],phys:true,func:false,nr:[0x13,0x22,0x31]},
+    {role:'FreezeCurrentState',used:'deact',proto:'(0x2F) InputOutputControlByIdentifier',req:['2F 02 00 02'],pos:['6F 02 00 02',{t:'zz'}],neg:['7F 2F',{t:'rc'}],phys:true,func:false,nr:[0x13,0x22,0x31]},
+    {role:'ShortTermAdjustment',used:'on',proto:'(0x2F) InputOutputControlByIdentifier',req:['2F 02 00 03',{t:'yy'}],pos:['6F 02 00 03',{t:'zz'}],neg:['7F 2F',{t:'rc'}],phys:true,func:false,nr:[0x13,0x22,0x31,0x33]},
+    {role:'ResetToDefault',used:'none',proto:'(0x2F) InputOutputControlByIdentifier',req:['2F 02 00 01'],pos:['6F 02 00 01',{t:'zz'}],neg:['7F 2F',{t:'rc'}],phys:true,func:false,nr:[]}],
+  tabs:{xx:{title:'응답: Pump Data (xx)',layout:[{name:'Motor current',type:'UInt16 ×0.01 A',def:'',con:'',desc:'',start:0,bits:16},{name:'Motor speed',type:'UInt16 rpm',def:'',con:'',desc:'',start:16,bits:16}]},
+    yy:{title:'요청: Control Option (yy)',layout:[{name:'Target duty',type:'UInt8 %',def:'0',con:'',desc:'0..100 %',start:0,bits:8},{name:'Ramp time',type:'UInt8 ×10 ms',def:'5',con:'',desc:'',start:8,bits:8}]},
+    zz:{title:'응답: Control Status (zz)',layout:LAYOUT_PUMP}},
+  NRC:{0x13:'incorrectMessageLengthOrInvalidFormat',0x22:'conditionsNotCorrect',0x31:'requestOutOfRange',0x33:'securityAccessDenied',0x7F:'serviceNotSupportedInActiveSession'},
+  line(parts){return parts.map(p=>typeof p==='string'?`<span class="code">${p}</span>`:`<a class="tok" data-tok="${p.t}" title="${p.t==='rc'?'부정 응답 코드 목록 열기/닫기':'이 자리의 데이터 탭 보기'}">${p.t}</a>`).join(' ');},
+  plain(parts){return parts.map(p=>typeof p==='string'?p:p.t).join(' ');},
+  render(){const st=this.st;const s=this.svcs[st.svc];const host=$('#stage');
+    const chk=u=>u==='on'?'<span class="chk on"></span>':u==='deact'?'<span class="chk on deact" title="비활성(체크 + 빨간 ✕) [SVUI-R400-Display]"></span>':'<span class="chk" title="서비스 없음"></span>';
+    const nrs=[...s.nr.map(c=>({c,state:false})),...(s.used!=='none'?[{c:0x7F,state:'Session: Default에서 막힘'},{c:0x33,state:'Security: Locked에서 막힘'}]:[])].filter((x,i,a)=>a.findIndex(y=>y.c===x.c)===i);
+    const tab=this.tabs[st.tab];
+    host.innerHTML=`<div class="win" style="height:780px"><div class="titlebar">Demo ECU — DiagAuthor 0.1.0<div class="dots"><i></i><i></i><i></i></div></div>
+      <div class="pathbar"><span>이름 경로</span><button class="btn navbtn">‹</button><button class="btn navbtn" disabled>›</button><div class="combo"><input class="tx" value="/Demo ECU/Base Variant/IO Control/Pump Motor"><button class="dropbtn">▾</button></div></div>
+      <div style="padding:0 14px;display:flex;flex-direction:column;gap:8px;flex:1;min-height:0">
+        <div class="box"><div class="bb row" data-m="M5-4" style="gap:10px"><b style="font-family:Consolas">0200</b>
+          ${st.editName?`<input class="tx" id="instname" value="${esc(st.name)}" style="width:220px">`:`<b style="font-size:15px">${esc(st.name)}</b><button class="btn sm" data-a="rename" title="페이지에서 바로 이름 바꾸기">이름 바꾸기</button>`}
+          <span class="hint">클래스 IO Control · 기본 변형 원본 · 사용 변형 4개 · 속성 대화상자는 Alt+Enter</span></div></div>
+        <div class="box" data-m="M5-3"><table class="grid svc" style="width:100%"><colgroup><col style="width:50px"><col style="width:200px"><col style="width:250px"><col><col><col style="width:136px"></colgroup>
+          <thead><tr><th>사용</th><th>서비스</th><th>프로토콜 서비스</th><th>요청</th><th>긍정 응답</th><th>부정 응답</th></tr></thead><tbody>
+          ${this.svcs.map((x,i)=>`<tr class="${x.used==='none'?'unused':''}${i===st.svc?' pick':''}" data-svc="${i}"><td>${chk(x.used)}</td><td>${esc(x.role)}${x.used==='deact'?' <span class="pill warn">비활성</span>':x.used==='none'?' <span class="pill grey">미사용</span>':''}</td><td><a class="link" style="font-weight:400">${esc(x.proto)}</a></td><td>${this.line(x.req)}</td><td>${this.line(x.pos)}</td><td>${this.line(x.neg)} <a class="tok" data-tok="rc" title="NR 목록 ${st.nr?'닫기':'열기'}">${st.nr?'<<':'>>'}</a></td></tr>`).join('')}</tbody></table>
+          <div class="hint" style="padding:5px 8px">자리표시(zz·yy·xx)를 누르면 그 탭이 열리고, rc나 &gt;&gt;를 누르면 부정 응답 코드 목록이 열립니다. 행에 마우스를 올리면 주소 방식별 요청·응답이 보입니다 [SVUI-R500]. 반복 안의 자리는 [zz], 줄에서 반복되면 *[zz]로 적습니다.</div></div>
+        <div style="display:grid;grid-template-columns:${st.nr?'minmax(0,1fr) 330px':'minmax(0,1fr)'};gap:8px;flex:1;min-height:0">
+          <div style="display:flex;flex-direction:column;min-height:0"><div class="tabsbar">${Object.entries(this.tabs).filter(([k])=>this.used(k)).map(([k,t])=>`<div class="tab${st.tab===k?' on':''}" data-tabk="${k}">${esc(t.title)}</div>`).join('')}
+            <div class="corner"><span class="seg">${[['all','전체'],['table','멤버 표만'],['grid','격자만']].map(x=>`<button data-view="${x[0]}" class="${st.lay.view===x[0]?'on':''}">${x[1]}</button>`).join('')}</span></div></div>
+            <div class="tabbody" style="padding:6px">${layoutHtml(tab.layout,st.lay,'q')}</div>
+            <div class="hint" style="padding:4px 2px">격자 칸을 누르면 멤버 표의 행이, 멤버 행을 누르면 격자 칸이 함께 선택됩니다 [DOUIG-R120]. 멤버 칸은 F2로 바로 고치고 Tab으로 다음 칸, 설명은 Ctrl+Enter로 확정합니다 [DOUI-R810..830]. 30바이트 Trace buffer는 앞 23바이트와 마지막 바이트만 보이고 번호에 …를 붙였습니다(26… / …33) [DOUIG-R210].</div></div>
+          ${st.nr?`<div class="box" style="display:flex;flex-direction:column;min-height:0"><div class="bh">NR (rc) · ${esc(s.role)}</div><div style="overflow:auto"><table class="grid" style="width:100%"><thead><tr><th style="width:80px">코드</th><th>이름</th></tr></thead><tbody>${nrs.map(n=>`<tr><td class="num">${n.state?'<span class="stateicon" title="'+esc(n.state)+'">S</span>':''}0x${n.c.toString(16).toUpperCase().padStart(2,'0')}</td><td title="${esc(n.state||'')}">${esc(this.NRC[n.c])}${n.state?` <span class="hint">(${esc(n.state)})</span>`:''}</td></tr>`).join('')}</tbody></table></div>
+            <div class="hint" style="padding:6px">S 아이콘 = 상태 그룹이 막아서 자동으로 붙는 NRC [DIUI-R420]. 설명 칸은 F2로 덮어쓸 수 있습니다.</div></div>`:''}
+        </div></div><div class="statusbar"><span>인스턴스 페이지 목업</span></div></div>`;
+    this.bind();},
+  used(k){const s=this.svcs[this.st.svc];return [...s.req,...s.pos].some(p=>typeof p!=='string'&&p.t===k)||k===this.st.tab;},
+  bind(){const st=this.st;const host=$('#stage');
+    host.onclick=e=>{const t=e.target;const vw=t.closest('[data-view]');if(vw){st.lay.view=vw.dataset.view;this.render();return;}const tok=t.closest('[data-tok]');if(tok){const k=tok.dataset.tok;const tr=tok.closest('tr[data-svc]');if(tr)st.svc=Number(tr.dataset.svc);if(k==='rc')st.nr=!st.nr;else st.tab=k;this.render();return;}
+      const tr=t.closest('tr[data-svc]');if(tr){st.svc=Number(tr.dataset.svc);const s=this.svcs[st.svc];const toks=[...s.req,...s.pos].filter(p=>typeof p!=='string').map(p=>p.t);if(!toks.includes(st.tab)&&toks[0])st.tab=toks[0];this.render();return;}
+      const tb=t.closest('[data-tabk]');if(tb){st.tab=tb.dataset.tabk;this.render();return;}
+      const g=t.closest('[data-qg]');if(g){st.lay.sel=Number(g.dataset.qg);st.lay.edit=null;this.render();return;}
+      const m=t.closest('td[data-qr]');if(m){if(st.lay.edit)this.commit();st.lay.sel=Number(m.dataset.qr);st.lay.col=m.dataset.k;this.render();return;}
+      const a=t.closest('[data-a]');if(a&&a.dataset.a==='rename'){st.editName=true;this.render();const i=$('#instname');i.focus();i.select();}};
+    host.onmouseover=e=>{const tr=e.target.closest('tr[data-svc]');const old=$('.tip');if(!tr){if(old)old.remove();return;}const s=this.svcs[Number(tr.dataset.svc)];
+      const text=`phys ${this.plain(s.req)}   ${this.plain(s.pos)}   ${this.plain(s.neg)}${s.func?`\nfunc ${this.plain(s.req)}   ${this.plain(s.neg)}`:''}\n(기능 주소 요청 없음 · SPRMIB 해당 없음: 서브함수 없는 서비스)\n프로토콜 서비스 ${s.proto}`;
+      const r=tr.getBoundingClientRect(),hr=host.getBoundingClientRect();if(old)old.remove();host.insertAdjacentHTML('beforeend',`<div class="tip" style="left:${r.left-hr.left+host.scrollLeft+180}px;top:${r.bottom-hr.top+host.scrollTop+2}px">${esc(text)}</div>`);};
+    host.onmouseleave=()=>{const o=$('.tip');if(o)o.remove();};
+    const inp=$('#instname');if(inp)inp.onkeydown=e=>{if(e.key==='Enter'){st.name=inp.value.trim()||st.name;st.editName=false;toast('인스턴스 이름을 바꿨습니다(한 명령).');this.render();}if(e.key==='Escape'){st.editName=false;this.render();}e.stopPropagation();};
+    const ed=$('#qed');if(ed){ed.focus();ed.select();ed.onkeydown=e=>{e.stopPropagation();if(e.key==='Enter'){if(ed.tagName==='TEXTAREA'&&!e.ctrlKey)return;e.preventDefault();this.commit();}else if(e.key==='Escape'){st.lay.edit=null;this.render();}else if(e.key==='Tab'){e.preventDefault();this.commit(e.shiftKey?-1:1);}};}},
+  commit(move){const st=this.st;const ed=$('#qed');const lay=this.tabs[st.tab].layout;const e=st.lay.edit;if(!e)return;lay[e.i][e.k]=ed.value;st.lay.edit=null;
+    if(move){const keys=['name','type','def','con','desc'];let ki=keys.indexOf(e.k)+move,ri=e.i;if(ki>=keys.length){ki=0;ri++;}if(ki<0){ki=keys.length-1;ri--;}if(lay[ri]){st.lay.sel=ri;st.lay.col=keys[ki];st.lay.edit={i:ri,k:keys[ki]};}}
+    this.render();},
+  key(e){const st=this.st;if(e.key==='F2'&&st.lay.sel!=null&&['name','type','def','con','desc'].includes(st.lay.col)){e.preventDefault();st.lay.edit={i:st.lay.sel,k:st.lay.col};this.render();}}
+};
+
+/* ------------------------------------------------------------------ S5 시작 화면·설정 */
+const S5={
+  recent:[{n:'demo.diagproj',p:'D:\\work\\diag\\demo.diagproj',t:'오늘 21:40'},{n:'brake_ecu.diagproj',p:'D:\\work\\diag\\brake_ecu.diagproj',t:'어제'},{n:'pump_ecu_v3.cdd',p:'D:\\in\\supplier\\pump_ecu_v3.cdd',t:'9월 24일'},{n:'template_uds.cddt',p:'D:\\in\\templates\\template_uds.cddt',t:'9월 20일'},{n:'abs_esp_old.diagproj',p:'D:\\archive\\abs_esp_old.diagproj',t:'9월 2일'}],
+  set:{tab:'general',recentN:4,dtc:'hex',path:'name',treeId:true,fill:true,order:'big',askRev:false,askShared:true,nrOpen:false,stripes:true,gridlines:true,keepWidths:true},
+  dlg:false,
+  render(){const s=this.set;const rec=this.recent.slice(0,s.recentN);const folders=[...new Set(rec.map(r=>r.p.replace(/\\[^\\]*$/,'')))];
+    $('#stage').innerHTML=`<div class="win" style="height:720px"><div class="titlebar">DiagAuthor 0.1.0<div class="dots"><i></i><i></i><i></i></div></div>
+      <div class="menubar"><span>파일</span><span>편집</span><span>보기</span><span>도움말</span></div>
+      <div class="heading"><h1>시작</h1><span class="subt">프로젝트를 열거나 CDD·CDDT를 가져옵니다</span><span style="margin-left:auto"><button class="btn" data-a="settings" data-m="M6-2">설정…</button></span></div>
+      <div class="start" data-m="M6-1">
+        <div class="box" style="display:flex;flex-direction:column;min-height:0"><div class="bh">최근 파일 <span class="hint" style="font-weight:400">✕ = 목록에서 빼기(파일은 그대로) · 최대 ${s.recentN}개(설정 · 0..16)</span></div>
+          <div class="recent" style="overflow:auto">${rec.map((r,i)=>`<div class="r" data-open="${esc(r.n)}"><span class="hint">${r.n.endsWith('.diagproj')?'◆':'▤'}</span><div><div>${esc(r.n)}</div><div class="p">${esc(r.p)}</div></div><span class="hint">${esc(r.t)}</span><button class="iconbtn" data-rm="${esc(r.n)}" title="목록에서 빼기 [MENU-R340-RemoveFile]">✕</button></div>`).join('')||'<div class="muted" style="padding:10px">최근 파일이 없습니다(최근 파일 수 0).</div>'}</div>
+          <div class="bh" style="border-top:1px solid var(--line)">최근 폴더 <span class="hint" style="font-weight:400">최근 파일의 폴더 · 누르면 열기 대화상자가 그 폴더에서 열림 [Open-R340]</span></div>
+          <div class="recent">${folders.map(f=>`<div class="r" data-folder="${esc(f)}" style="grid-template-columns:22px minmax(0,1fr)"><span class="hint">▸</span><div class="p" style="color:inherit">${esc(f)}</div></div>`).join('')}</div></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="box"><div class="bh">열기</div><div class="bb" style="display:grid;gap:6px">
+            <button class="btn" style="text-align:left">프로젝트 열기…  <span class="hint">Ctrl+O · .diagproj</span></button>
+            <button class="btn" style="text-align:left">CDD·CDDT 가져오기…  <span class="hint">미리보기 뒤 새 프로젝트</span></button>
+            <button class="btn" style="text-align:left">새 프로젝트…  <span class="hint">Ctrl+N</span></button>
+            <button class="btn" style="text-align:left">예제 폴더 열기  <span class="hint">설정의 예제 위치 [OPEN-R310-VectorExamples]</span></button></div></div>
+          <div class="drop" id="drop"><b>여기로 파일을 끌어 놓으세요</b><br><span class="small">.diagproj는 열고, .cdd/.cddt는 가져오기 미리보기로 보냅니다(Drag and Drop of Files). 주 창 어디에 놓아도 됩니다.</span></div>
+        </div></div>
+      <div class="statusbar"><span>시작 화면 목업</span></div>
+      <div id="s5dlg">${this.dlg?this.settingsHtml():''}</div></div>`;
+    this.bind();},
+  settingsHtml(){const s=this.set;const t=s.tab;const tabs=[['general','일반'],['display','표시'],['edit','편집'],['confirm','확인'],['lists','목록']];
+    const ck=(k,l,h='')=>`<label class="row" style="margin:5px 0"><input type="checkbox" data-s="${k}"${s[k]?' checked':''}> ${l}${h?` <span class="hint">${h}</span>`:''}</label>`;
+    let body='';
+    if(t==='general')body=`<div class="form"><label>최근 파일 수</label><div class="row"><input class="tx" type="number" min="0" max="16" data-s="recentN" value="${s.recentN}" style="width:70px"><span class="hint">0..16, 기본 4 [MENU-R340-Number]</span></div>
+      <label>예제 폴더</label><input class="tx" value="C:\\Users\\Public\\Documents\\(설치 예제)"><label>작업본 자동 보존</label><span class="hint">작업 DB에 바로 기록하므로 따로 자동 저장 간격은 두지 않습니다(복구 대화상자가 대신함).</span></div>`;
+    if(t==='display')body=`<div class="form"><label>DTC 표시</label><span class="seg">${[['hex','0x 16진'],['sae','SAE (C002011)']].map(x=>`<button data-sv="dtc:${x[0]}" class="${s.dtc===x[0]?'on':''}">${x[1]}</button>`).join('')}</span>
+      <label>경로 표시</label><span class="seg">${[['name','이름 경로'],['qual','Qualifier 경로']].map(x=>`<button data-sv="path:${x[0]}" class="${s.path===x[0]?'on':''}">${x[1]}</button>`).join('')}</span></div>
+      ${ck('treeId','트리 인스턴스 이름 앞에 식별자 보이기','(F190 VIN)')}${ck('fill','16진 값을 편집할 때 앞자리 0 채우기','0xA1 → 0x00A1')}`;
+    if(t==='edit')body=`<div class="form"><label>새 데이터 타입 바이트 순서</label><span class="seg">${[['big','Big endian (HighLow)'],['little','Little endian (LowHigh)']].map(x=>`<button data-sv="order:${x[0]}" class="${s.order===x[0]?'on':''}">${x[1]}</button>`).join('')}</span></div>
+      ${ck('nrOpen','진단 인스턴스를 열 때 부정 응답 코드 목록도 보이기')}${ck('vwCopy','변형 마법사에서 모든 인스턴스 사본 허용','[VW-R040-CopyInsens]')}${ck('askRev','저장할 때 변경 기록(개정)을 남길지 묻기','출력 의미 확인 전까지 꺼 둠')}`;
+    if(t==='confirm')body=`${ck('askShared','여러 변형이 쓰는 DID·인스턴스를 고칠 때 묻기','사본으로 바꾼 뒤 수정 / 모두 수정')}${ck('askBase','기본 변형에 인스턴스를 넣은 뒤 다른 변형에도 넣을지 묻기')}${ck('askBaseDel','기본 변형에서 참조 인스턴스를 지운 뒤 다른 변형에서도 지울지 묻기')}${ck('askOld','이전·이후 스키마 파일을 열 때 알리기')}`;
+    if(t==='lists')body=`${ck('stripes','줄무늬 행','Colored Rows')}${ck('gridlines','격자선','Grid Lines')}${ck('keepWidths','목록 종류마다 정렬·열 너비 기억','[LIST-R240]·[LIST-R720]')}<button class="btn" data-a="resetview">보기 초기화 (분할·결과 창·열 너비)</button>`;
+    return `<div class="overlay"><div class="dlg" style="width:640px;height:430px"><div class="dh">설정<button class="x" data-a="close">✕</button></div><div class="db" style="flex-direction:row;gap:12px">
+      <div class="list1 box" style="width:130px;flex:none">${tabs.map(x=>`<div class="${t===x[0]?'on':''}" data-st="${x[0]}">${x[1]}</div>`).join('')}</div><div style="flex:1">${body}</div></div>
+      <div class="df"><span class="hint">사용자 설정은 PC에 남고 프로젝트 파일에는 넣지 않습니다(04 명세).</span><span class="sp"></span><button class="btn primary" data-a="close">확인</button><button class="btn" data-a="close">취소</button><button class="btn" data-a="apply">적용</button></div><div class="grip"></div></div></div>`;},
+  bind(){const host=$('#stage');const s=this.set;
+    host.onclick=e=>{const t=e.target;
+      const fo=t.closest('[data-folder]');if(fo){toast('열기 대화상자: '+fo.dataset.folder);return;}
+      const rm=t.closest('[data-rm]');if(rm){this.recent=this.recent.filter(x=>x.n!==rm.dataset.rm);toast('목록에서 뺐습니다(파일은 지우지 않음).');this.render();return;}
+      const o=t.closest('[data-open]');if(o){toast('열기: '+o.dataset.open);return;}
+      const st=t.closest('[data-st]');if(st){s.tab=st.dataset.st;this.render();return;}
+      const sv=t.closest('[data-sv]');if(sv){const [k,v]=sv.dataset.sv.split(':');s[k]=v;this.render();return;}
+      const a=t.closest('[data-a]');if(!a)return;
+      if(a.dataset.a==='settings'){this.dlg=true;this.render();}
+      if(a.dataset.a==='close'){this.dlg=false;this.render();}
+      if(a.dataset.a==='apply')toast('설정을 적용했습니다.');
+      if(a.dataset.a==='resetview')toast('보기를 처음 배치로 되돌렸습니다 [MENU-R1135].');};
+    host.onchange=e=>{const t=e.target;if(t.dataset.s){s[t.dataset.s]=t.type==='checkbox'?t.checked:Math.max(0,Math.min(16,Number(t.value)||0));this.render();}};
+    const d=$('#drop');if(d){const win=$('#stage .win');
+      win.ondragover=e=>{e.preventDefault();d.classList.add('over');};win.ondragleave=e=>{if(!win.contains(e.relatedTarget))d.classList.remove('over');};
+      win.ondrop=e=>{e.preventDefault();d.classList.remove('over');const f=e.dataTransfer.files[0];if(!f){toast('파일을 놓으세요.');return;}
+        const ext=f.name.toLowerCase().split('.').pop();toast(ext==='diagproj'?`프로젝트 열기: ${f.name}`:ext==='cdd'||ext==='cddt'?`가져오기 미리보기: ${f.name}`:`지원하지 않는 파일: ${f.name}`);};}
+  },
+  key(e){if(e.key==='Escape'&&this.dlg){e.preventDefault();this.dlg=false;this.render();}}
+};
+
+/* ------------------------------------------------------------------ S6 데이터 타입 바꾸기 */
+const S6={
+  src:{name:'UInt16 ×0.1 bar',bits:16},
+  targets:[{name:'UInt16 ×0.1 bar (Copy)',bits:16},{name:'UInt16 ×0.01 bar',bits:16},{name:'UInt8 ×1 bar',bits:8},{name:'UInt32 ×0.001 bar',bits:32}],
+  uses:[{kind:'DID',path:'Base Variant/DID/0100 Brake Status',obj:'Brake pressure',after:1,checked:true},
+    {kind:'DID',path:'Base Variant/DID/0101 Hydraulic Pressure',obj:'Pressure',after:0,checked:true},
+    {kind:'서비스',path:'Base Variant/IO Control/Pump Motor/ShortTermAdjustment 요청',obj:'Target pressure',after:1,checked:false},
+    {kind:'비트필드',path:'Base Variant/DID/0102 Yaw Rate/Status (8 Bit)',obj:'Pressure flag',after:0,bitfield:8,checked:false},
+    {kind:'스냅샷',path:'고장 메모리/Snapshot 0x20',obj:'Pressure',after:0,readonly:true,checked:false}],
+  target:0,
+  /* 막는 이유(고를 수 없음): 원본 보존 읽기 전용, 비트필드 컨테이너를 넘는 길이 */
+  conflict(u){const t=this.targets[this.target];if(u.readonly)return'원본 CDD 보존 항목(읽기 전용)이라 바꿀 수 없습니다.';
+    if(u.bitfield&&t.bits>u.bitfield)return`${u.bitfield}비트 비트필드 안에 ${t.bits}비트 타입을 넣을 수 없습니다.`;return'';},
+  /* 영향(고를 수 있음): 길이가 바뀌면 뒤 멤버의 위치가 움직인다 */
+  impact(u){const t=this.targets[this.target];const d=(t.bits-this.src.bits)/8;if(!d||u.bitfield)return'';return u.after?`길이 ${d>0?'+':''}${d}바이트 · 뒤 멤버 ${u.after}개 위치 이동`:`길이 ${d>0?'+':''}${d}바이트`;},
+  render(){const t=this.targets[this.target];
+    $('#stage').innerHTML=`<div style="min-width:1000px"><div class="dlg" style="width:980px;height:520px" data-m="M6-3"><div class="dh">데이터 타입 바꾸기<button class="x" data-a="cancel">✕</button></div><div class="db">
+      <div class="form"><label>바꿀 타입</label><div><b>${esc(this.src.name)}</b> <span class="hint">(이 대화상자를 연 타입, 바꿀 수 없음)</span></div>
+      <label>새 타입</label><select class="tx" id="s6t">${this.targets.map((x,i)=>`<option value="${i}"${i===this.target?' selected':''}>${esc(x.name)} · ${x.bits}비트</option>`).join('')}</select></div>
+      <div class="row"><b>아래에서 고른 사용처에 적용</b><span class="hint">충돌이 있는 행은 고를 수 없습니다. 적용은 한 명령(Undo 한 번)입니다.</span><span style="flex:1"></span><button class="btn sm" data-a="all">모두 선택(충돌 제외)</button><button class="btn sm" data-a="none">모두 해제</button></div>
+      <div class="tablewrap" style="flex:1"><table class="grid" style="width:100%"><colgroup><col style="width:44px"><col style="width:74px"><col style="width:330px"><col style="width:130px"><col style="width:190px"><col></colgroup><thead><tr><th></th><th>종류</th><th>경로</th><th>데이터 객체</th><th>영향</th><th>충돌</th></tr></thead><tbody>
+      ${this.uses.map((u,i)=>{const c=this.conflict(u),m=this.impact(u);return `<tr><td><input type="checkbox" data-u="${i}"${u.checked&&!c?' checked':''}${c?' disabled':''}></td><td>${u.kind}</td><td title="${esc(u.path)}">${esc(u.path)}</td><td>${esc(u.obj)}</td><td class="${m?'':'dim'}">${esc(m||'없음')}</td><td class="${c?'lt-warn':'dim'}" title="${esc(c)}">${esc(c||'없음')}</td></tr>`;}).join('')}</tbody></table></div>
+      <div class="hint">지금은 "데이터 타입 독립 복사"로 사본을 만든 뒤 사용처를 하나씩 고쳐야 합니다. 이 대화상자는 고른 사용처의 연결을 한 번에 바꿉니다(Replace Data Type). 길이가 바뀌면 뒤 멤버의 바이트 위치가 움직이므로 영향 열에 보입니다. 비슷한 타입 합치기(Replace Similar Data Types)는 범위 밖입니다.</div></div>
+      <div class="df"><span class="hint">${this.uses.filter(u=>u.checked&&!this.conflict(u)).length}곳 선택</span><span class="sp"></span><button class="btn primary" data-a="ok">확인</button><button class="btn" data-a="cancel">취소</button></div><div class="grip"></div></div></div>`;
+    $('#s6t').onchange=e=>{this.target=Number(e.target.value);this.render();};
+    $('#stage').onclick=e=>{const a=e.target.closest('[data-a]');if(!a)return;const act=a.dataset.a;
+      if(act==='all')this.uses.forEach(u=>u.checked=!this.conflict(u));
+      if(act==='none')this.uses.forEach(u=>u.checked=false);
+      if(act==='ok'){toast(`${this.uses.filter(u=>u.checked&&!this.conflict(u)).length}곳의 타입을 ${t.name}(으)로 바꿨습니다(한 명령).`);return;}
+      if(act==='cancel'){toast('취소: 바꾸지 않았습니다.');return;}
+      this.render();};
+    $('#stage').onchange=e=>{const u=e.target.dataset.u;if(u!==undefined){this.uses[Number(u)].checked=e.target.checked;this.render();}};}
+};
+
+/* ------------------------------------------------------------------ S7 변형 마법사 */
+const S7={
+  mode:'ref',base:'Base Variant',sel:'Identification',name:'Variant D',
+  tree:[{cls:'Sessions',items:[{n:'01 Default Session',req:true},{n:'02 Programming Session'},{n:'03 Extended Session'}]},
+    {cls:'Identification',items:[{n:'F190 VIN',req:true},{n:'F18C Serial Number'},{n:'F186 Active Session'}]},
+    {cls:'Dynamic Data',items:[{n:'0100 Brake Status'},{n:'0101 Hydraulic Pressure'},{n:'0102 Yaw Rate'}]},
+    {cls:'IO Control',items:[{n:'0200 Pump Motor'}]},{cls:'Fault Memory',items:[{n:'Fault Memory',req:true}]}],
+  init(){for(const c of this.tree)for(const i of c.items)i.act=this.mode==='empty'?(i.req?'ref':'unused'):this.mode==='copy'?(i.req?'ref':'copy'):'ref';},
+  sum(c){const s=new Set(c.items.map(i=>i.act));return s.size===1?[...s][0]:'mixed';},
+  label:{ref:'참조',copy:'사본',unused:'사용 안 함',mixed:'(혼합)'},
+  icon:{ref:'↪',copy:'⧉',unused:'○',mixed:'◐'},
+  render(){if(!this.tree[0].items[0].act)this.init();const cur=this.tree.find(c=>c.cls===this.sel)||this.tree[0];const all=new Set(this.tree.map(c=>this.sum(c)));const allSum=all.size===1?[...all][0]:'mixed';
+    const sel=(v,req,attr)=>`<select class="tx" ${attr}>${['ref','copy','unused'].filter(x=>!(req&&x==='unused')).map(x=>`<option value="${x}"${v===x?' selected':''}>${this.label[x]}</option>`).join('')}${v==='mixed'?'<option value="mixed" selected disabled>(혼합)</option>':''}</select>`;
+    $('#stage').innerHTML=`<div style="min-width:1000px"><div class="dlg" style="width:980px;height:560px" data-m="M6-4"><div class="dh">변형 마법사<button class="x">✕</button></div><div class="db">
+      <div class="form"><label>이름</label><input class="tx" id="s7n" value="${esc(this.name)}">
+      <label>만들기</label><div class="row">${[['ref','참조로 (기본)'],['copy','사본으로'],['empty','빈 변형(필수만)']].map(x=>`<label class="row"><input type="radio" name="s7m" value="${x[0]}"${this.mode===x[0]?' checked':''}> ${x[1]}</label>`).join('&nbsp;&nbsp;')}</div>
+      <label>기준 변형</label><select class="tx"${this.mode==='empty'?' disabled':''}><option>Base Variant</option><option>Variant A</option><option>Variant B</option></select>
+      <label>모든 인스턴스</label><div class="row">${sel(allSum,false,'data-all="1"')}<span class="hint">여기서 바꾸면 아래 전체가 바뀝니다. 아래가 섞이면 (혼합)입니다.</span></div></div>
+      <div class="two" style="grid-template-columns:260px minmax(0,1fr);flex:1;min-height:0">
+        <div class="box list1">${this.tree.map(c=>{const s=this.sum(c);return `<div class="${c.cls===this.sel?'on':''}" data-cls="${esc(c.cls)}"><span>${this.icon[s]}</span>${esc(c.cls)} <span class="hint" style="margin-left:auto">${this.label[s]}</span></div>`;}).join('')}</div>
+        <div class="tablewrap"><table class="grid" style="width:100%"><colgroup><col style="width:44px"><col><col style="width:90px"><col style="width:160px"></colgroup><thead><tr><th></th><th>${esc(cur.cls)}</th><th>필수</th><th>동작</th></tr></thead><tbody>
+          <tr><td>${this.icon[this.sum(cur)]}</td><td><b>(클래스 전체)</b></td><td></td><td>${sel(this.sum(cur),false,'data-clsall="1"')}</td></tr>
+          ${cur.items.map((i,k)=>`<tr><td>${this.icon[i.act]}</td><td>${esc(i.n)}</td><td>${i.req?'예':''}</td><td>${sel(i.act,i.req,`data-it="${k}"`)}</td></tr>`).join('')}</tbody></table></div></div>
+      <div class="hint">아이콘은 새 변형에서의 상태입니다(↪ 참조, ⧉ 사본, ○ 사용 안 함). 필수 인스턴스는 사용 안 함을 고를 수 없습니다 [VW-R040]·[VW-R100..200]. 사본은 지금의 "인스턴스 사본" 명령을 씁니다.</div></div>
+      <div class="df"><span class="sp"></span><button class="btn primary" data-a="ok">확인</button><button class="btn">취소</button></div><div class="grip"></div></div></div>`;
+    const host=$('#stage');
+    host.onchange=e=>{const t=e.target;if(t.name==='s7m'){this.mode=t.value;this.init();this.render();return;}
+      if(t.dataset.all){for(const c of this.tree)for(const i of c.items)i.act=t.value==='unused'&&i.req?'ref':t.value;this.render();return;}
+      if(t.dataset.clsall){for(const i of cur.items)i.act=t.value==='unused'&&i.req?'ref':t.value;this.render();return;}
+      if(t.dataset.it!==undefined){cur.items[Number(t.dataset.it)].act=t.value;this.render();}
+      if(t.id==='s7n')this.name=t.value;};
+    host.onclick=e=>{const c=e.target.closest('[data-cls]');if(c){this.sel=c.dataset.cls;this.render();return;}const a=e.target.closest('[data-a]');if(a&&a.dataset.a==='ok'){const n={ref:0,copy:0,unused:0};for(const c of this.tree)for(const i of c.items)n[i.act]++;toast(`${this.name}: 참조 ${n.ref} · 사본 ${n.copy} · 사용 안 함 ${n.unused} (한 명령)`);}};}
+};
+
+/* ------------------------------------------------------------------ S8 Qualifier 개요 */
+const S8={
+  ctx:'doc',hideGen:false,sub:true,sel:new Set(),edit:null,dlg:false,opt:{max:32,case:'keep',scope:'sel'},
+  rows(){const r=[];for(const d of DTC)r.push({o:d,kind:'DTC',path:'/Demo ECU/Base Variant/DTC/'+d.name,ns:'dtc'});for(const d of DID)r.push({o:d,kind:'DID',path:'/Demo ECU/Base Variant/DID/'+d.name,ns:'did'});
+    return r.filter(x=>(this.ctx==='doc'||x.ns==='dtc')&&(!this.hideGen||x.o.qual!==qualFromName(x.o.name)));},
+  render(){const rows=this.rows();const changedIds=this.changed||new Set();
+    $('#stage').innerHTML=`<div style="min-width:1000px"><div class="dlg" style="width:980px;height:560px" data-m="M6-5"><div class="dh">Qualifier 개요<button class="x">✕</button></div><div class="db">
+      <div class="row"><span>범위</span><select class="tx" id="s8ctx"><option value="doc"${this.ctx==='doc'?' selected':''}>문서 전체</option><option value="ns"${this.ctx==='ns'?' selected':''}>현재 범위: Base Variant / DTC</option></select>
+        <label class="row"><input type="checkbox" id="s8hide"${this.hideGen?' checked':''}> 이름에서 만든 Qualifier 숨기기</label><label class="row"><input type="checkbox" checked> 하위 객체의 Qualifier도 보이기</label>
+        <span style="flex:1"></span><button class="btn" data-a="recreate">다시 만들기…</button></div>
+      <div class="tablewrap" style="flex:1"><table class="grid" style="width:100%"><colgroup><col style="width:240px"><col style="width:280px"><col style="width:70px"><col style="width:90px"><col></colgroup><thead><tr><th>Qualifier</th><th>이름</th><th>객체 종류</th><th>이름에서</th><th>경로</th></tr></thead><tbody>
+      ${rows.map((x,i)=>{const gen=x.o.qual===qualFromName(x.o.name);const ed=this.edit===x.o.id;return `<tr class="${this.sel.has(x.o.id)?'sel':''}" data-q="${x.o.id}">${ed?`<td class="editing"><input class="tx" id="s8ed" value="${esc(x.o.qual)}"></td>`:`<td data-qe="${x.o.id}" style="${changedIds.has(x.o.id)?'background:#e6f6ec':''}" title="F2 또는 두 번 눌러 고치기">${esc(x.o.qual)}</td>`}<td>${esc(x.o.name)}</td><td>${x.kind}</td><td>${gen?'<span class="pill ok">예</span>':'<span class="pill grey">아니요</span>'}</td><td class="dim">${esc(x.path)}</td></tr>`;}).join('')}</tbody></table></div>
+      <div class="hint">Qualifier 열은 바로 고칠 수 있습니다(읽기 전용 객체 제외). 여러 행을 고르고 "다시 만들기"로 이름에서 새로 만듭니다 [RCRQ-R200]. 녹색 칸 = 방금 바뀐 값.</div></div>
+      <div class="df"><span class="hint">${rows.length}개 · ${this.sel.size}개 선택</span><span class="sp"></span><button class="btn">닫기</button></div><div class="grip"></div>
+      ${this.dlg?`<div class="overlay"><div class="dlg" style="width:460px;height:330px"><div class="dh">Qualifier 다시 만들기</div><div class="db"><div class="form">
+        <label>최대 길이</label><input class="tx" type="number" min="8" max="128" id="s8max" value="${this.opt.max}" style="width:80px">
+        <label>대소문자</label><span class="seg">${[['keep','이름대로'],['upper','대문자'],['lower','소문자']].map(x=>`<button data-case="${x[0]}" class="${this.opt.case===x[0]?'on':''}">${x[1]}</button>`).join('')}</span>
+        <label>대상</label><div>${[['sel','선택한 행만',this.sel.size>0],['shown','보이는 행 전체',true],['doc','문서 전체',true]].map(x=>`<label class="row"><input type="radio" name="s8scope" value="${x[0]}"${this.opt.scope===x[0]?' checked':''}${x[2]?'':' disabled'}> ${x[1]}</label>`).join('')}</div></div>
+        <div class="hint">최대 길이 8..128 [QUAL-R130]. 한글만 있는 이름은 바꾸지 않고 건너뜁니다(결정 필요).</div></div><div class="df"><span class="sp"></span><button class="btn primary" data-a="rok">확인</button><button class="btn" data-a="rcancel">취소</button></div></div></div>`:''}
+      </div></div>`;
+    this.bind(rows);},
+  bind(rows){const host=$('#stage');
+    $('#s8ctx').onchange=e=>{this.ctx=e.target.value;this.render();};$('#s8hide').onchange=e=>{this.hideGen=e.target.checked;this.render();};
+    host.onclick=e=>{const t=e.target;const cs=t.closest('[data-case]');if(cs){this.opt.case=cs.dataset.case;this.render();return;}
+      const a=t.closest('[data-a]');if(a){const act=a.dataset.a;
+        if(act==='recreate'){if(!this.sel.size)this.opt.scope='shown';this.dlg=true;this.render();return;}
+        if(act==='rcancel'){this.dlg=false;this.render();return;}
+        if(act==='rok'){const sc=$('input[name=s8scope]:checked');if(sc)this.opt.scope=sc.value;this.opt.max=Math.max(8,Math.min(128,Number($('#s8max').value)||32));
+          const targets=this.opt.scope==='sel'?rows.filter(x=>this.sel.has(x.o.id)):this.opt.scope==='shown'?rows:[...DTC,...DID].map(o=>({o}));this.changed=new Set();
+          for(const x of targets){const q=qualFromName(x.o.name,{case:this.opt.case,max:this.opt.max});if(q&&q!==x.o.qual){x.o.qual=q;this.changed.add(x.o.id);}}
+          this.dlg=false;toast(`${this.changed.size}개 Qualifier를 다시 만들었습니다(한 명령).`);this.render();return;}}
+      const qe=t.closest('[data-qe]');const tr=t.closest('tr[data-q]');
+      if(tr&&!t.closest('#s8ed')){const id=tr.dataset.q;if(this.edit&&this.edit!==id){this.edit=null;}if(e.ctrlKey||e.metaKey){this.sel.has(id)?this.sel.delete(id):this.sel.add(id);}else{if(qe&&this.sel.size===1&&this.sel.has(id)){this.edit=id;this.render();const i=$('#s8ed');i.focus();i.select();return;}this.sel=new Set([id]);}this.render();}};
+    const ed=$('#s8ed');if(ed)ed.onkeydown=e=>{e.stopPropagation();if(e.key==='Enter'){const o=[...DTC,...DID].find(x=>x.id===this.edit);if(!/^[A-Za-z_][A-Za-z0-9_]*$/.test(ed.value)){ed.classList.add('bad');toast('영문 또는 _로 시작, 영문·숫자·_만 [QUAL-R120].');return;}o.qual=ed.value;this.edit=null;this.render();}if(e.key==='Escape'){this.edit=null;this.render();}};},
+  key(e){if(e.key==='F2'&&this.sel.size===1&&!this.edit){e.preventDefault();this.edit=[...this.sel][0];this.render();const i=$('#s8ed');if(i){i.focus();i.select();}}}
+};
+
+/* ------------------------------------------------------------------ S9 비교 보기 */
+const S9={
+  f:{lo:true,mod:true,ro:true,refd:true,rec:true,attr:true,trans:true,lang:false},level:'inst',sel:3,open:new Set(),
+  rows:[{lvl:0,o:'Base Variant'},{lvl:1,o:'Sessions'},{lvl:2,o:'Programming Session'},
+    {lvl:3,o:'Start · 상태 전이',t:'mod',why:'trans',l:'Default → Programming',r:'Extended → Programming',d:'상태 전이가 다릅니다.\n왼쪽: Default Session에서 전이\n오른쪽: Extended Session에서만 전이'},
+    {lvl:1,o:'IO Control'},{lvl:2,o:'0200 Pump Motor'},
+    {lvl:3,o:'ShortTermAdjustment · 요청 yy',t:'mod',why:'refd',l:'Target duty: UInt8 %',r:'Target duty: UInt16 ‰',d:'참조한 데이터 타입이 다릅니다. 참조 대상의 차이는 이 한 줄로만 보입니다 [CMP-R005].\n왼쪽: UInt8 % (1 Byte)\n오른쪽: UInt16 ‰ (2 Byte)'},
+    {lvl:3,o:'FreezeCurrentState',t:'lo',l:'있음 (비활성)',r:'',d:'오른쪽 파일에는 이 서비스가 없습니다.'},
+    {lvl:1,o:'Dynamic Data'},{lvl:2,o:'0102 Yaw Rate',t:'ro',l:'',r:'있음',d:'왼쪽(작업본)에는 없습니다.'},
+    {lvl:1,o:'DTC'},
+    {lvl:2,o:'0x404022 Supply Voltage - Too high',t:'mod',why:'rec',l:'Set condition: (비어 있음)',r:'Set condition: Voltage > 16.5 V for 2 s',d:'레코드 항목 Set condition이 다릅니다.'},
+    {lvl:2,o:'0x401025 Pump Motor - Signal plausibility',t:'mod',why:'attr',l:'user.Released: 아니요',r:'user.Released: 예',d:'사용자 속성 값이 다릅니다.'},
+    {lvl:2,o:'0x401013 Pump Motor - Circuit open',t:'mod',why:'lang',l:'이름(de-DE): Pumpenmotor - Unterbrechung',r:'이름(de-DE): Pumpenmotor - Leitungsunterbrechung',d:'보이는 언어가 아닌 de-DE에서만 다릅니다 [CMP-R035]. 이 필터는 처음에 꺼져 있습니다.'},
+    {lvl:0,o:'데이터 타입'},{lvl:1,o:'UInt16 ×0.1 bar',t:'mod',l:'Unit: bar',r:'Unit: kPa',d:'단위가 다릅니다.'}],
+  levels:{var:0,cls:1,inst:2,all:9},
+  diff(r){return !!(r.l||r.r);},
+  pass(r){const f=this.f;if(!this.diff(r))return true;if(!f[r.t])return false;if(r.why&&!f[r.why])return false;return true;},
+  parent(i){const r=this.rows[i];for(let k=i-1;k>=0;k--)if(this.rows[k].lvl===r.lvl-1)return k;return -1;},
+  sub(i){const r=this.rows[i];const out=[];for(let k=i+1;k<this.rows.length&&this.rows[k].lvl>r.lvl;k++)out.push(k);return out;},
+  expanded(i){return this.rows[i].lvl<this.levels[this.level]||this.open.has(i);},
+  /* 보이는 행: 필터를 통과하고, 부모가 보이면서 펼쳐져 있어야 한다. 차이가 하나도 남지 않은 묶음 행은 숨긴다 [CMP-R018]. */
+  visible(){const out=[];const shown=new Set();
+    this.rows.forEach((r,i)=>{const p=this.parent(i);if(p>=0&&!(shown.has(p)&&this.expanded(p)))return;
+      if(this.diff(r)){if(this.pass(r)){shown.add(i);out.push({...r,i});}return;}
+      const n=this.sub(i).filter(k=>this.diff(this.rows[k])&&this.pass(this.rows[k])).length;if(!n)return;shown.add(i);out.push({...r,i,n});});
+    return out;},
+  render(){const v=this.visible();const s=this.rows[this.sel];const f=this.f;const tg=(k,l,tip)=>`<button class="tog${f[k]?' on':''}" data-f="${k}" title="${tip}">${l}</button>`;
+    $('#stage').innerHTML=`<div class="win" style="height:640px" data-m="M6-6"><div class="titlebar">비교 — 작업본 ↔ demo_rev11.diagproj<div class="dots"><i></i><i></i><i></i></div></div>
+      <div class="toolbar">${tg('lo','왼쪽만','왼쪽에만 있는 객체 [CMP-R010]')}${tg('mod','바뀜','양쪽에 있고 다른 객체')}${tg('ro','오른쪽만','오른쪽에만 있는 객체')}${tg('refd','🔗 참조 객체','참조한 객체(데이터 타입 등)의 차이')}<span class="sep"></span>${tg('rec','레코드 항목','DTC 레코드 항목 차이 [CMP-R012]')}${tg('attr','속성 값','속성 값 차이')}${tg('trans','상태 전이','상태 전이 차이')}${tg('lang','다른 언어','보이는 언어가 아닌 언어의 차이(처음에는 꺼짐)')}<button class="tog" data-a="reset" title="모든 필터 초기화 [CMP-R016]">모두 보이기</button><span class="sep"></span>
+        <span>펼침</span><select class="tx" id="s9lvl">${[['var','변형까지'],['cls','클래스까지'],['inst','인스턴스까지'],['all','모두']].map(x=>`<option value="${x[0]}"${this.level===x[0]?' selected':''}>${x[1]}</option>`).join('')}</select>
+        <span class="sep"></span><button class="tb" data-a="export" title="텍스트·XML·XHTML [CMP-R131]">차이 내보내기…</button></div>
+      <div style="padding:6px 12px" class="legend"><span><i style="background:#fff1ef"></i>왼쪽만</span><span><i style="background:#eaf7ee"></i>오른쪽만</span><span><i style="background:#fff8e6"></i>바뀜</span><span>🔗 참조 객체 차이</span><span class="hint">왼쪽: 작업본(revision 12) · 오른쪽: demo_rev11.diagproj(revision 11) · 템플릿 UDS_Template rev 3 [CMP-R070]·[CMP-R080]</span></div>
+      <div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:8px;padding:0 12px 10px;min-height:0">
+        <div class="tablewrap"><table class="grid diff" style="width:100%"><colgroup><col style="width:330px"><col><col></colgroup><thead><tr><th>객체</th><th>왼쪽</th><th>오른쪽</th></tr></thead><tbody>
+          ${v.length?v.map(r=>{const d=this.diff(r);const mark=d?'':(this.expanded(r.i)?'▾ ':'▸ ');const cnt=!d&&!this.expanded(r.i)?` <span class="hint">(차이 ${r.n})</span>`:'';
+            return `<tr class="${r.t==='lo'?'lo':r.t==='ro'?'ro':d?'mod':''}${r.i===this.sel?' sel':''}" data-r="${r.i}"><td style="padding-left:${8+r.lvl*16}px">${mark}${r.why==='refd'?'🔗 ':''}${esc(r.o)}${cnt}</td><td>${esc(r.l||'')}</td><td>${esc(r.r||'')}</td></tr>`;}).join(''):'<tr><td colspan="3" class="muted">보일 차이가 남아 있지 않습니다 [CMP-R018].</td></tr>'}</tbody></table></div>
+        <div class="box" style="display:flex;flex-direction:column"><div class="bh">상세</div><div class="bb" style="white-space:pre-wrap;flex:1">${s&&s.d?esc(s.o+'\n\n'+s.d):'차이 행을 고르면 여러 줄 내용이 보입니다 [CMP-R030]. 묶음 행(▸)을 누르면 펼칩니다.'}</div>
+          <div class="bb row" style="border-top:1px solid var(--line);flex-wrap:wrap"><button class="btn sm" data-a="left"${s&&s.t==='ro'?' disabled':''}>왼쪽 객체로 이동</button><button class="btn sm" data-a="right"${s&&s.t==='lo'?' disabled':''}>오른쪽 파일에서 보기</button>${s&&s.why==='refd'?'<button class="btn sm" data-a="dtdiff">데이터 타입 차이…</button>':''}</div></div></div></div>`;
+    const host=$('#stage');$('#s9lvl').onchange=e=>{this.level=e.target.value;this.open.clear();this.render();};
+    host.onclick=e=>{const t=e.target;const fb=t.closest('[data-f]');if(fb){this.f[fb.dataset.f]=!this.f[fb.dataset.f];this.render();return;}
+      const r=t.closest('tr[data-r]');if(r){const i=Number(r.dataset.r);this.sel=i;if(!this.diff(this.rows[i])&&this.rows[i].lvl>=this.levels[this.level]){this.open.has(i)?this.open.delete(i):this.open.add(i);}this.render();return;}
+      const a=t.closest('[data-a]');if(!a)return;const act=a.dataset.a;
+      if(act==='reset'){for(const k in this.f)this.f[k]=true;this.render();return;}
+      toast({left:'작업본에서 이 객체로 이동합니다(비교 창은 열어 둠) [CMP-R100].',right:'저장된 파일의 읽기 전용 보기로 엽니다.',dtdiff:'두 데이터 타입을 비교하는 창을 엽니다(옮기기 없음) [CMP-R090].',export:'차이를 텍스트·XML·XHTML로 내보냅니다. 화면 필터는 적용하지 않습니다 [CMP-R131].'}[act]);};}
+};
+
+/* ------------------------------------------------------------------ S10 의존성 표 */
+const S10={
+  open:new Set(['Sessions']),addr:false,cut:0,sel:null,
+  states:['Session: Default','Session: Programming','Session: Extended','Security: Locked','Security: Unlocked'],
+  data:[{cls:'Sessions',svc:'Start',req:'10 LL',addr:'P/F',rows:[['Default Session','✓ → Default','✓ → Default','✓ → Default','✓','✓ → Locked'],['Programming Session','✗','✓','✓ → Programming','✓','✓'],['Extended Session','✓ → Extended','✗','✓','✓','✓']]},
+    {cls:'Identification',svc:'Read',req:'22 LL LL',addr:'P',rows:[['VIN','✓','✓','✓','✓','✓'],['Serial Number','✓','✓','✓','✓','✓'],['Active Session','✓','✓','✓','✓','✓']]},
+    {cls:'IO Control',svc:'ShortTermAdjustment',req:'2F LL LL 03 yy',addr:'P',rows:[['Pump Motor','✗','✗','✓','✗','✓']]},
+    {cls:'Routine',svc:'Start',req:'31 01 LL LL',addr:'P',rows:[['Erase Memory','✗','✓','✗','✗','✓'],['Self Test','✗','✗','✓','✓','✓']]}],
+  agg(rows,c){const s=new Set(rows.map(r=>r[c]));return s.size===1?[...s][0]:'(혼합)';},
+  render(){const st=this.states;const cut=this.cut;const cols=st.map((x,i)=>i).filter(i=>i>=cut);
+    let body='';for(const g of this.data){const open=this.open.has(g.cls);
+      body+=`<tr data-g="${esc(g.cls)}" class="${this.sel===g.cls?'sel':''}" style="font-weight:600"><td style="background:#eef3fb">${open?'▾':'▸'} ${esc(g.cls)} / * / ${esc(g.svc)}${this.addr?` <span class="hint">[${g.addr}]</span>`:''}</td><td class="num" style="background:#eef3fb">${g.req}</td>${cut?'<td style="background:#eef3fb"></td>':''}${cols.map(i=>`<td style="background:#eef3fb">${this.agg(g.rows,i+1)}</td>`).join('')}</tr>`;
+      if(open)for(const r of g.rows)body+=`<tr><td style="padding-left:26px">${esc(r[0])}${this.addr?` <span class="hint">[${g.addr}]</span>`:''}</td><td></td>${cut?'<td></td>':''}${cols.map(i=>`<td>${r[i+1]}</td>`).join('')}</tr>`;}
+    $('#stage').innerHTML=`<div class="win" style="height:560px" data-m="M6-7"><div class="titlebar">의존성 — Base Variant<div class="dots"><i></i><i></i><i></i></div></div>
+      <div class="toolbar"><button class="tb" data-a="openall">모두 펼치기</button><button class="tb" data-a="closeall">모두 접기</button><span class="sep"></span><button class="tog${this.addr?' on':''}" data-a="addr">주소 방식 표시</button><button class="tb" data-a="allcols"${cut?'':' disabled'}>모든 열 펼치기</button><span class="hint" style="margin-left:10px">상태 열 머리를 오른쪽 버튼으로 누르면 그 왼쪽 상태 열을 접습니다 · 묶음 행: 모두 같으면 그 값, 다르면 (혼합) · 두 번 눌러 펼치기·여러 행 F2 일괄 변경은 지금과 같음</span></div>
+      <div style="padding:10px 12px;flex:1;min-height:0" class="tablewrap"><table class="grid" style="width:100%"><thead><tr><th style="width:340px">서비스</th><th style="width:140px">요청</th>${cut?`<th class="dim" style="width:84px" title="${esc(st.slice(0,cut).join(', '))}">« ${cut}열 접힘</th>`:''}${cols.map(i=>`<th data-sc="${i}" title="오른쪽 버튼: 이 열 왼쪽의 상태 열 접기">${esc(st[i])}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>
+      <div class="statusbar"><span>상태 그래프에는 서비스 이름 ↔ 요청 바이트 전환, 전이 색 구분, 상태 노드 툴팁(그 상태에서 실행할 수 있는 서비스), 변형·상태 그룹 선택을 더합니다 [STUI-R150]</span></div></div>`;
+    const host=$('#stage');
+    host.onclick=e=>{const g=e.target.closest('tr[data-g]');if(g){const c=g.dataset.g;const now=Date.now();
+        if(this.sel===c&&now-(this.lastClick||0)<400){this.open.has(c)?this.open.delete(c):this.open.add(c);this.lastClick=0;}else this.lastClick=now;
+        this.sel=c;this.render();return;}
+      const a=e.target.closest('[data-a]');if(!a)return;const act=a.dataset.a;if(act==='openall')this.data.forEach(d=>this.open.add(d.cls));if(act==='closeall')this.open.clear();if(act==='addr')this.addr=!this.addr;if(act==='allcols')this.cut=0;this.render();};
+    host.oncontextmenu=e=>{const th=e.target.closest('th[data-sc]');if(!th)return;e.preventDefault();const i=Number(th.dataset.sc);if(i>0){this.cut=i;this.render();toast(`${i}개 상태 열을 접었습니다. "모든 열 펼치기"로 되돌립니다.`);}};}
+};
+
+/* ------------------------------------------------------------------ 화면 목록·설명 */
+const N=(id,title,body,ref,tryit)=>`<div class="item"><span class="mid">${id}</span><b>${title}</b><p>${body}</p>${ref?`<p class="ref">근거: ${ref}</p>`:''}${tryit?`<p class="try">해 보기: ${tryit}</p>`:''}</div>`;
+const SCREENS=[
+ {id:'main',title:'주 화면 · 목록 편집',sub:'M1 목록 · M2-2 여러 객체 · M3 찾기·경로·키 · M4 출력 창',desc:'셀 편집, 여러 행 값 넣기, 필터 규칙, 찾기, 출력 창 링크',obj:S1,notes:()=>
+  N('M1-1','셀에서 바로 고치기','F2(또는 같은 칸을 천천히 한 번 더 클릭)로 셀에서 고칩니다. Tab/Shift+Tab = 다음·이전 편집 칸, Enter = 확정, Esc = 취소. 마지막 행의 마지막 편집 칸에서 Tab을 누르면 새 행을 만듭니다. 바로 고칠 수 없는 열은 이유를 알립니다. 속성 대화상자는 두 번 클릭·Alt+Enter·"속성…"으로 엽니다(Alt+Enter는 도움말에 없는 DiagAuthor 결정).','[LIST-R410] · [UI-R300] · [UI-R300-TABLast] · [CM-R120] · Keyboard Shortcuts(F2·TAB·ENTER·ESC)','DTC 행의 Set condition 칸을 고르고 <kbd>F2</kbd>, 입력 후 <kbd>Tab</kbd>')+
+  N('M1-2','여러 행 입력 · 값 복사 · 오른쪽 버튼','여러 행을 고르고 바꿀 열의 칸을 마지막으로 누른 뒤 F2 → 입력 → Enter면 선택한 모든 행에 들어갑니다(한 명령). "선택한 DTC에 이 값 복사"는 마지막으로 누른 DTC의 그 열 값을 다른 선택 DTC에 복사합니다. 레코드 항목 열에서, 여러 행을 골랐을 때만 켜집니다. 선택된 행 위의 오른쪽 버튼은 선택을 유지하고, 빈 곳의 오른쪽 버튼은 "새 DTC…" 메뉴입니다(지금은 여러 행 선택이 풀리고 빈 곳에는 메뉴가 없음).','[LIST-R420] · [DTCUI-R035] · [PRDTC-R035] · [DTCOP-R035] · [UI-R350-Element] · [UI-R350-Empty]','<kbd>Ctrl</kbd>+클릭으로 DTC 세 개를 고르고, 마지막으로 Corrective action 칸을 누른 뒤 오른쪽 버튼 → "이 값 복사"')+
+  N('M1-3','필터 규칙','대소문자를 가리지 않습니다. 띄어 쓴 단어는 하나라도 맞으면 보이고, "따옴표" 안은 구절 그대로 찾습니다. 필터가 걸리면 "3 / 14 표시" 칩과 지우기 버튼이 나옵니다. 트리 노드에 들어가면 필터를 풀고, 수정 뒤에는 유지합니다(지금과 같음).','[LIST-R500] · [UI-R100-Filter] · [UI-R340-Filter] · Available DTCs "Filter"','필터에 <code>pump "short to"</code> 입력')+
+  N('M1-4','노드 진입·정렬·열 너비','노드에 들어가면 목록에 포커스, 첫 행 선택, 식별 속성(DTC 코드·DID 번호) 오름차순입니다. Ctrl+헤더 클릭은 여러 열 정렬이고 헤더에 순서 번호가 붙습니다. 끌어서 바꾼 열 너비와 정렬은 목록 종류마다 기억합니다(지금은 새로 고칠 때마다 너비를 다시 맞춥니다).','[UI-R100] · [LIST-R210] · [LIST-R240] · [LIST-R250] · [LIST-R600] · [LIST-R700] · [LIST-R720]','이름 헤더 클릭 후 <kbd>Ctrl</kbd>+Corrective action 헤더 클릭, 열 경계 끌기')+
+  N('M1-5','새 번호와 새 행 위치','툴바·메뉴로 만들면 선택 행(첫 행이 아니면 그 위 행) 다음의 빈 번호, 표 끝 새 항목 행은 마지막 행 다음의 빈 번호를 씁니다. 위로 빈 번호가 없으면 아래로 찾습니다. 새 행은 정렬 위치에 선택된 채 나옵니다.','[UI-R335] · [UI-R330-MagicLine] · [UI-R340-SortIns] · [UI-R340-SelIns]','0x401013 행을 고르고 툴바 "추가…"')+
+  N('M1-6','목록 크게 보기','목록만 창 전체로 보고 Esc로 돌아옵니다. 선택 객체 창을 목록 아래로 옮기면서(23차) 줄어든 목록 높이를 보완합니다.','DTCs "Full Screen" · Keyboard Shortcuts(ESC)','"⤢ 목록 크게" → <kbd>Esc</kbd>')+
+  N('M1-7','열 정보 · 헤더 툴팁','헤더에 마우스를 올리면 그 열의 Qualifier와 설명이 보입니다. "열 정보"는 목록의 모든 열을 한 표로 보입니다. Qualifier 열 자체는 맨 뒤라 평소 보지 않아도 됩니다.','How to Edit DTCs Efficiently · Available DTCs "Show Column Info"','헤더에 마우스 올리기, "열 정보"')+
+  N('M2-2','선택 객체 창에서 고치기 · 여러 객체 속성 시트','선택 객체 창의 속성 탭에서 바로 고칩니다(지금은 읽기 전용 글). 여러 행을 고르면 공통 속성 시트가 되고, 값이 다른 칸은 비우고 "(여러 값)"으로 알리며, 값을 넣으면 모두에 한 명령으로 적용합니다(지금은 첫 행만 보임).','[LIST-R1400] · [LIST-R1420] · [UI-D410] · [UI-R400-multi] · [UI-R450-multi]','<kbd>Shift</kbd>+클릭으로 여러 DTC 선택 → 아래 "속성" 탭')+
+  N('M3-1','찾기 대화상자','비모달 창. 찾을 내용 기록(▾), 범위(이름 / Qualifier / 이름·Qualifier·설명·식별자·DTC·서비스·NRC / 요청 바이트), 대소문자·단어 단위·전체 일치. 찾기 = 처음부터, 다음 찾기 = F3(창을 닫아도 동작), 모두 찾기 = 출력 창에 qpath 링크로. 지금은 입력 상자 → 결과 표(모달)입니다.','Search Dialog · [SRCH-R150] · [SRCH-R150-F3] · [SRCH-R150-Closed] · [SRCH-R200]','<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd> → "Wheel" → 모두 찾기 → 출력 창 ↗')+
+  N('M3-2','경로 입력','▾로 이번 실행에서 넣은 경로를 다시 고르고, Enter 또는 "이동"으로 갑니다. 이름 경로(지금과 같음)에 더해 <code>qpath:</code>와 <code>[DTC]</code>·<code>[DID]</code> 같은 종류 선택자를 받습니다. 틀린 경로는 선택을 유지하고 출력 창에 오류를 남깁니다.','[TB-R310] · Object Paths','<code>qpath:/Base_Variant/[DTC]DTC_403012</code> 입력 후 Enter')+
+  N('M3-3','키보드','F6/Shift+F6 = 트리 ↔ 목록 ↔ 선택 객체, F9 = 검증(F5도 유지), F3 = 다음 찾기, Alt+Enter = 속성 대화상자, Alt+←/→ = 뒤로·앞으로(지금과 같음). Ctrl+C는 보이는 그대로 복사하고 머리 줄도 화면의 열 이름으로 씁니다(지금은 내부 키 name·qualifier가 들어감).','Keyboard Shortcuts · [LIST-R100]','<kbd>F6</kbd> 여러 번, <kbd>F9</kbd>')+
+  N('M4-1','출력 창(작업 기록)','열: 종류 · 시각(1/100초) · 출처 · 링크 · 내용. 링크(↗)로 객체 이동, 오른쪽 상세 영역, 종류 토글(상태는 처음에 숨김)·출처·내용 필터(서로 AND)와 초기화, 자동 스크롤, 복사·지우기. 필터 상태는 다음 실행에도 남깁니다. 검증 결과 탭은 지금처럼 둡니다.','[OW-R100]..[OW-R140] · [OW-R050] · [OW-R240] · [OW-R300]..[OW-R360] · [OW-R335] · [OW-R420] · [OW-R430] · [OW-R225] · [OW-R230] · [OW-R700]','<kbd>F9</kbd> 후 경고의 ↗ 누르기, "상세" 켜기')+
+  N('M4-2','상태 줄 설명','메뉴·툴바 버튼에 마우스를 올리면 설명이 상태 줄에 나옵니다(Qt setStatusTip). 지금 상태 줄은 처리 중·완료 메시지와 진행 막대만 보입니다.','Status Bar','툴바 버튼 위에 마우스')+
+  N('M4-3','보기 초기화','분할 위치·결과 창·열 너비를 처음 배치로 되돌립니다. 23차부터 분할 위치를 저장하므로 되돌릴 방법이 필요합니다.','[MENU-R1135] · Docking Windows','툴바 "보기 초기화"')},
+ {id:'dialog',title:'속성 대화상자',sub:'M2-1 Qualifier 자동 · M2-3 DTC 속성 탭 · M2-4 대화상자 규칙 · M2-5 값 형식',desc:'이름을 따라가는 Qualifier, 상세 보기·빈 항목 숨기기, 대화상자 공통 규칙',obj:S3,notes:()=>
+  N('M2-1','Qualifier를 이름에서 자동으로','새 객체는 이름에서 Qualifier를 만들고, 이름을 바꾸면 Qualifier가 따라 바뀝니다(이름에서 만든 값과 같을 때만). 직접 고치면 그 뒤로는 따라가지 않습니다. 식별 이름 줄은 접어 두어 평소에는 보지 않습니다. 한글만 있는 이름은 로마자로 바꿀 글자가 없어 빈 값이 되므로 규칙을 정해야 합니다(목업: DTC는 코드, 그 밖은 종류+번호).','[QUAL-R010] · [QUAL-R020] · [QUAL-R050] · [QUAL-R120] · [QUAL-R130]','DTC 이름을 바꿔 보고, 식별 이름 줄을 펼쳐 Qualifier를 직접 고친 뒤 "이름에서 다시 만들기"')+
+  N('M2-3','DTC 속성 대화상자 보강','23차 속성 탭에 "상세 보기"(오른쪽 큰 편집 영역, 여러 줄), "빈 항목 숨기기", 항목 ▲▼(Alt+↑/↓), 위쪽 DTC 콤보+▲▼를 더합니다. 키 열은 없애고 툴팁으로 옮깁니다. 추가 대화상자에도 속성 탭을 둡니다(23차 남은 것).','DTC Property Page(Navigation) · DTC Property Page General(Show Details · Hide Empty Lines · Up/Down)','"속성 (4)" 탭 → 상세 보기 켜기')+
+  N('M2-4','대화상자 공통 규칙','버튼 순서 확인·취소·적용(적용은 닫지 않음), 오른쪽 아래 크기 조절 표시, 처음 입력칸 포커스, Enter = 확인·Esc = 취소, Ctrl+Tab = 다음 탭, 다른 창을 여는 버튼은 "…"로 끝냄, 포커스 없는 콤보·라디오 위에서 휠을 굴려도 값이 바뀌지 않음(Qt 기본과 다름). 지금은 확인 버튼 글자가 "적용"이고 닫지 않는 적용이 없습니다.','[UI-R1120-Gripper] · [UI-R1130] · [UI-R1220] · [UI-R1230] · [UI-R1300] · [UI-R1340] · [UI-R1410] · [UI-R1420] · Keyboard Shortcuts(Ctrl+TAB)','대화상자 오른쪽 아래 모서리 끌기, <kbd>Ctrl</kbd>+<kbd>Tab</kbd>')+
+  N('M2-5','값 형식 전환','기본값·상수·DTC 코드를 10진/16진/2진으로 넣고 봅니다. 저장 값은 같고 표시만 바뀝니다. BCD 인코딩은 10진·16진만 둡니다. 16진 편집 때 앞자리 0 채우기는 설정입니다.','Value · [VALUI-R020-BCD] · [VALUI-R050] · Options Display "Fill hexadecimal values with leading zeroes"','데이터 객체 속성에서 16진 → 기본값 0x41')},
+ {id:'instance',title:'인스턴스 페이지 · 데이터 배치',sub:'M5-1 격자 연동 · M5-2 멤버 셀 편집 · M5-3 서비스 행 · M5-4 이름 바로 고치기',desc:'자리표시 링크, 주소 방식 툴팁, 상태 NRC, 격자↔멤버 선택',obj:S4,notes:()=>
+  N('M5-1','격자 ↔ 멤버 표 선택, 긴 필드 줄임','지금은 멤버 → 격자만 연결됩니다. 격자 칸을 눌러도 멤버 행이 선택되게 합니다. 지금 격자는 64바이트에서 잘려 뒤가 보이지 않습니다. 최상위의 24바이트 넘는 필드는 앞 23바이트와 마지막 바이트만 보이고 번호에 …를 붙입니다(26… / …33).','[DOUIG-R120] · [DOUIG-R210]','격자의 Motor current 칸 누르기, Trace buffer 행 보기')+
+  N('M5-2','멤버 칸 바로 고치기','이름·데이터 타입·기본값·상수·설명을 F2로 고치고 Tab/Shift+Tab으로 옆 칸, Esc로 취소. 설명은 Enter가 줄바꿈, Ctrl+Enter가 확정입니다. 바이트·비트 위치는 길이에서 계산하므로 고치지 않습니다. 22차에서 남긴 "표 안 직접 멤버 편집"입니다.','[DOUI-R810] · [DOUI-R815] · [DOUI-R820] · [DOUI-R830] · Data Objects(Byte No., Bit Pos.)','멤버 설명 칸을 누르고 <kbd>F2</kbd>, 두 줄 입력 후 <kbd>Ctrl</kbd>+<kbd>Enter</kbd>')+
+  N('M5-3','서비스 행','zz·yy·xx를 누르면 그 탭이 열리고, rc나 &gt;&gt;는 NR 목록을 열고 닫습니다. 반복 안의 자리는 [zz], 줄에서 반복되면 *[zz]. 행 툴팁에 phys/func별 요청·응답 줄. NR 목록에는 상태 그룹이 막는 서비스의 NRC가 아이콘과 함께 붙습니다(원본 상태 그룹 NRC, 표시 전용). 비활성 서비스는 체크 + 빨간 ✕(지금은 꺼진 체크 + "비활성" 글자).','Services · [SVUI-R400-Display] · [SVUI-R500] · [DIUI-R410] · [DIUI-R420] · [DIUI-R420-Icon]','ShortTermAdjustment 행의 yy·rc 누르기, 행에 마우스')+
+  N('M5-4','인스턴스 이름 바로 고치기','페이지 머리에서 이름을 고치고, 설명·식별자 등은 "속성…"으로 대화상자에서 고칩니다.','Diagnostic Instance(Name · Properties button)','"이름 바꾸기"')},
+ {id:'start',title:'시작 화면 · 설정',sub:'M6-1 시작 화면 · M6-2 설정',desc:'최근 파일·폴더, 끌어 놓기, 사용자 설정',obj:S5,notes:()=>
+  N('M6-1','시작 화면(빈 상태)','프로젝트가 없을 때 최근 파일(✕로 목록에서 빼기), 최근 폴더, 열기·가져오기·새 프로젝트, 예제 폴더, 끌어 놓기 영역을 보입니다. 주 창 어디에 놓아도 됩니다(.diagproj 열기, .cdd/.cddt 가져오기 미리보기). CANdelaStudio 13은 따로 시작 페이지 없이 File 탭의 Open 페이지를 쓰지만, DiagAuthor에는 리본 백스테이지가 없으므로 빈 화면이 그 역할을 합니다.','Open Page · [Open-R340] · [OPEN-R310-VectorExamples] · [MENU-R340] · [MENU-R340-RemoveFile] · Drag and Drop of Files','파일을 창에 끌어 놓기, ✕ 누르기')+
+  N('M6-2','설정 대화상자','일반(최근 파일 수 0..16 · 기본 4), 표시(DTC 형식 기본값, 이름/Qualifier 경로, 트리 식별자, 16진 0 채우기), 편집(새 타입 바이트 순서, 인스턴스를 열 때 NR 목록, 변형 마법사 사본 허용, 저장 때 개정 기록 묻기), 확인(공유 객체 수정, 기본 변형 인스턴스 추가·삭제, 이전 스키마), 목록(줄무늬·격자선·정렬·열 너비 기억, 보기 초기화). 사용자 설정은 PC에 남고 프로젝트 파일에는 넣지 않습니다.','Options General · Display · Edit · Confirmation · [MENU-R340-Number] · [OPT-R260]','"설정…"')},
+ {id:'replace-type',title:'데이터 타입 바꾸기',sub:'M6-3',desc:'사용처를 골라 다른 타입으로 한 번에 연결',obj:S6,notes:()=>
+  N('M6-3','데이터 타입 바꾸기','타입의 사용처 목록에서 행을 골라 다른 타입으로 한 번에 바꿉니다. 원본 보존 항목이나 비트필드를 넘는 길이처럼 바꿀 수 없는 행은 충돌 열에 이유를 보이고 고를 수 없습니다. 길이가 바뀌어 뒤 멤버 위치가 움직이는 것은 영향 열에 보입니다. 지금은 독립 복사 뒤 사용처를 하나씩 고칩니다.','Replace Data Type dialog · Replace Data Type feature(D001·D002)','새 타입을 "UInt8 ×1 bar"와 "UInt32 ×0.001 bar"로 바꿔 영향·충돌 보기')},
+ {id:'variant-wizard',title:'변형 마법사',sub:'M6-4',desc:'참조·사본·빈 변형과 인스턴스별 동작',obj:S7,notes:()=>
+  N('M6-4','변형 마법사','새 변형을 참조로(기본) / 사본으로 / 빈 변형(필수만)으로 만들고, 클래스·인스턴스마다 참조·사본·사용 안 함을 고릅니다. 섞이면 (혼합), 필수 인스턴스는 사용 안 함 불가, 빈 변형은 기준 변형을 고르지 않습니다. 지금 "변형 추가…"는 기준 변형 전체를 참조로만 만듭니다.','Variant Wizard · [VW-R040] · [VW-R050] · [VW-R100] · [VW-R200] · [VW-R500] · [VW-R510]','"사본으로" 고른 뒤 Dynamic Data의 인스턴스 하나를 사용 안 함으로')},
+ {id:'qualifier',title:'Qualifier 개요',sub:'M6-5',desc:'Qualifier 직접 고치기와 이름에서 다시 만들기',obj:S8,notes:()=>
+  N('M6-5','Qualifier 개요 편집','범위(문서 전체/현재 범위), "이름에서 만든 Qualifier 숨기기", Qualifier 칸 직접 편집(읽기 전용 객체 제외), 다시 만들기(선택한 행/보이는 행/문서 전체, 최대 길이 8..128, 대소문자). 선택이 없으면 "보이는 행"이 기본입니다. 지금 개요는 읽기 전용입니다.','Qualifier Overview · Recreate Qualifier · [RCRQ-R200] · [QUAL-R200]','행 하나 고르고 <kbd>F2</kbd>, "다시 만들기…" → 대문자')},
+ {id:'compare',title:'비교 보기',sub:'M6-6',desc:'차이 트리, 필터, 펼침 단계, 상세, 이동',obj:S9,notes:()=>
+  N('M6-6','비교 보기','차이를 트리 순서대로 트리로 보이고, 왼쪽만/바뀜/오른쪽만/참조 객체 필터와 레코드 항목·속성 값·상태 전이·다른 언어(처음에는 꺼짐) 필터를 둡니다. 자식이 모두 숨으면 부모도 숨깁니다. 펼침 단계(처음은 인스턴스까지), 상세 창, 객체로 이동, 색 범례, 내보내기. 두 변형은 입력 상자 두 번 대신 한 대화상자에서 고릅니다. 속성·다른 언어 비교는 비교 엔진 확장이 필요합니다.','Compare View · [CMP-R005] · [CMP-R010] · [CMP-R012] · [CMP-R016] · [CMP-R018] · [CMP-R020] · [CMP-R030] · [CMP-R070] · [CMP-R080] · [CMP-R100] · [CMP-R110] · [CMP-R131]','"바뀜" 끄기, 펼침 "모두", "다른 언어" 켜기, 묶음 행(▸) 누르기')},
+ {id:'dependencies',title:'의존성 표',sub:'M6-7',desc:'모두 펼치기·접기, 주소 방식, 상태 열 접기',obj:S10,notes:()=>
+  N('M6-7','의존성 표·상태 그래프','22차의 클래스별 묶음에 모두 펼치기/접기, 주소 방식 표시, 상태 열 왼쪽 접기/모든 열 펼치기를 더합니다. 상태 그래프에는 서비스 이름 ↔ 요청 바이트, 전이 색 구분, 상태 노드 툴팁(그 상태에서 실행할 수 있는 서비스), 변형·상태 그룹 선택을 둡니다.','Dependencies · [STUI-R150] · Overview(Tabular) · State Diagram','"모두 펼치기", "주소 방식 표시", 상태 열 머리에서 오른쪽 버튼')}];
+
+/* ------------------------------------------------------------------ 라우팅 */
+let current=null;
+function route(){const id=(location.hash||'#main').slice(1);const sc=SCREENS.find(s=>s.id===id)||SCREENS[0];current=sc;
+  $('#navlist').innerHTML=SCREENS.map(s=>`<a href="#${s.id}" class="${s===sc?'on':''}"><b>${esc(s.title)}</b><small>${esc(s.sub)}</small></a>`).join('');
+  $('#scrtitle').textContent=sc.title;$('#scrdesc').textContent=sc.desc;
+  $('#notes').innerHTML=`<h3>이 화면의 검토 항목</h3>${sc.notes()}<p class="hint">근거의 [ID]는 CANdelaStudio 13 도움말의 FeatureID입니다. 항목 번호는 docs/ui-manual-review-2026-09-26.md와 같습니다.</p>`;
+  const st=$('#stage');st.onclick=null;st.onchange=null;st.onmouseover=null;st.onmouseleave=null;st.onkeydown=null;st.ondblclick=null;st.oncontextmenu=null;
+  if(sc.obj===S1&&!S1.st)S1.init();sc.obj.render();}
+window.addEventListener('hashchange',route);
+document.addEventListener('keydown',e=>{if(!current)return;if(current.obj.key)current.obj.key(e);});
+$('#tagtoggle').onchange=e=>document.body.classList.toggle('show-tags',e.target.checked);
+route();
+</script>
+
+
+</body></html>
